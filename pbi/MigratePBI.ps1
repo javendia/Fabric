@@ -1,106 +1,60 @@
 <#
-.NOTES
-    File Name: MigratePBI.ps1
-    Author: Javier Buendía
 .SYNOPSIS 
-    Moving reports from Power BI Report Server or Power BI Desktop previous versions.
+    Migration of reports from Power BI Report Server or previous versions of Power BI.
 .DESCRIPTION
-    This script builds a new report using a template and recycles the visual content of the previous file as follows:
-        1. Convert .pbix files to .zip files
-        2. Modifiy the .zip content, deleting everything except the “Report” folder
-        4. Copy files from the template folder to the .zip file (excluding the Report folder)
-        5. Convert the .zip files to .pbix files
-        6. Upload the .pbix files to the Power BI destination workspace
+    This script recycles the visual content of the previous file as follows:
+        1. Create a folder for each report to process
+        2. Convert .pbix file to Power BI project (.pbip)
+        3. Upload the .pbix files to the Power BI destination workspace, binding to the desired semantic model
 #>
 
 # Variables
 
 # Power BI files path
 $libPath = Read-Host -Prompt "Please enter the path to Power BI files: "
-# Template file path
-$templatePath = Read-Host -Prompt "Please enter the path to the template file: "
 # Power BI workspace name
 $workspaceName = Read-Host -Prompt "Please enter Power BI workspace name: "
+
+# Download modules and install
+New-Item -ItemType Directory -Path ".\modules" -ErrorAction SilentlyContinue | Out-Null
+@("https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psm1"
+, "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psd1") |% {
+    Invoke-WebRequest -Uri $_ -OutFile ".\modules\$(Split-Path $_ -Leaf)"
+}
+if(-not (Get-Module Az.Accounts -ListAvailable)) { 
+    Install-Module Az.Accounts -Scope CurrentUser -Force
+}
+if(-not (Get-Module PBIXtoPBIP_PBITConversion -ListAvailable)) { 
+    Install-Module PBIXtoPBIP_PBITConversion -Scope CurrentUser -Force
+}
+Import-Module ".\modules\FabricPS-PBIP" -Force
+
+# Authenticate
+Set-FabricAuthToken -reset
 
 $pbixFiles = Get-ChildItem -Path $libPath -Filter "*.pbix"
 
 # Iterating over the .pbix files
 foreach ($pbixFile in $pbixFiles) 
 {
-
-    # .pbix a .zip
-    [Reflection.Assembly]::LoadWithPartialName('System.IO.Compression')
-    $zipPath = "$libPath\$($pbixFile.BaseName).zip"
-    Rename-Item -Path $pbixFile.FullName -NewName $zipPath
-
-    # Open the .zip file
-    $stream = New-Object IO.FileStream($zipPath, [IO.FileMode]::Open)
-    $zip = New-Object IO.Compression.ZipArchive($stream, [IO.Compression.ZipArchiveMode]::Update)
-
-    # We make a list of the entries (we should use a list because .Entries is read-only)
-    $zipEntries = @($zip.Entries)
-
-    # Delete zip entries except "Report" folder
-    foreach ($entry in $zipEntries) 
+    $path = $libPath + "\" + $pbixFile.BaseName
+    If(!(test-path -PathType container $path))
     {
-        if ($entry.FullName -notlike "Report/*" -and $entry.FullName -ne "Report") 
-        {
-            $entry.Delete()
-        }
+          New-Item -ItemType Directory -Path $path
     }
 
-    # Copy files from the template to the .zip file, except "Report" folder
-    $itemsToCopy = Get-ChildItem -Path $templatePath -Recurse | Where-Object {
-        $_.FullName -notlike "*\Report*" -and -not $_.PsIsContainer
-    }
+    $source = $libPath + "\" + "$($pbixFile.BaseName).pbix"
+    $destination =  $libPath + "\" + $pbixFile.BaseName + "\" + "$($pbixFile.BaseName).pbix"
 
-    foreach ($item in $itemsToCopy) 
-    {
-        $destinationPath = $item.Name
-        $entry = $zip.GetEntry($destinationPath)
+    Move-Item -Path $source -Destination $destination
 
-        # Delete entry if it already exists
-        if ($entry) 
-        {
-            $entry.Delete()
-        }
+    PBIXtoPBIP_PBITConversion -PBIXFilePath $destination -ConversionFileType "pbip"
 
-        # Create new zip entry
-        $entry = $zip.CreateEntry($destinationPath)
-        $entryStream = $entry.Open()
+    $pbipReportPath = "$($path)\$($pbixFile.BaseName).Report"
 
-        # Copy files from the template to the .zip file
-        $itemStream = [System.IO.File]::OpenRead($item.FullName)
-        $itemStream.CopyTo($entryStream)
-        $itemStream.Close()
+    # Ensure workspace exists
+    $workspaceId = New-FabricWorkspace  -name $workspaceName -skipErrorIfExists
 
-        # Close zip entry
-        $entryStream.Close()
-    }
-
-    # Close zip file
-    $zip.Dispose()
-    $stream.Close()
-
-    # .zip to .pbix
-    $pbixFinalPath = "$libPath\$($pbixFile.BaseName).pbix"
-    Rename-Item -Path $zipPath -NewName $pbixFinalPath
-}
-
-# PUBLISHING TO POWER BI
-# Connect to Power BI
-Connect-PowerBIServiceAccount
-
-# Get the Power BI workspace GUID
-$workspace = Get-PowerBIWorkspace -Name $workspaceName
-
-# Iterating over the .pbix files
-foreach ($pbixFile in $pbixFiles) 
-{
-    # Get path and report name
-    $pbixFilePath = Join-Path -Path $libPath -ChildPath $pbixFile.Name
-    $reportName = [System.IO.Path]::GetFileNameWithoutExtension($pbixFile.Name)
-    
-    # Publish the report
-    New-PowerBIReport -Path $pbixFilePath -Name $reportName -Workspace $workspace
+    # Import the report and ensure its binded to the previous imported report
+    Import-FabricItem -workspaceId $workspaceId -path $pbipReportPath -itemProperties @{"semanticModelId" = $semanticModelId}
 }
