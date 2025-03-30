@@ -5,15 +5,17 @@
     This script recycles the visual content of the previous file as follows:
         1. Create a folder for each report to process
         2. Convert .pbix file to Power BI project (.pbip)
-        3. Upload the .pbix files to the Power BI destination workspace, binding to the desired semantic model
+        3. Upload the report to the Power BI destination workspace, binding to the desired semantic model
 #>
 
 # Variables
 
 # Power BI files path
-$libPath = Read-Host -Prompt "Please enter the path to Power BI files: "
+$libPath = Read-Host -Prompt "Please enter the path to Power BI files"
 # Power BI workspace name
-$workspaceName = Read-Host -Prompt "Please enter Power BI workspace name: "
+$workspaceName = Read-Host -Prompt "Please enter the Power BI workspace name"
+# Power BI semantic model
+$semanticModelId = Read-Host -Prompt "Please enter the Power BI semantic model GUID"
 
 # Download modules and install
 New-Item -ItemType Directory -Path ".\modules" -ErrorAction SilentlyContinue | Out-Null
@@ -21,11 +23,8 @@ New-Item -ItemType Directory -Path ".\modules" -ErrorAction SilentlyContinue | O
 , "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psd1") |% {
     Invoke-WebRequest -Uri $_ -OutFile ".\modules\$(Split-Path $_ -Leaf)"
 }
-if(-not (Get-Module Az.Accounts -ListAvailable)) { 
+if (-not (Get-Module Az.Accounts -ListAvailable)) { 
     Install-Module Az.Accounts -Scope CurrentUser -Force
-}
-if(-not (Get-Module PBIXtoPBIP_PBITConversion -ListAvailable)) { 
-    Install-Module PBIXtoPBIP_PBITConversion -Scope CurrentUser -Force
 }
 Import-Module ".\modules\FabricPS-PBIP" -Force
 
@@ -37,20 +36,32 @@ $pbixFiles = Get-ChildItem -Path $libPath -Filter "*.pbix"
 # Iterating over the .pbix files
 foreach ($pbixFile in $pbixFiles) 
 {
-    $path = $libPath + "\" + $pbixFile.BaseName
+    $fileName = $pbixFile.BaseName
+    $path = "$($libPath)\$($fileName)"
+    
     If(!(test-path -PathType container $path))
     {
           New-Item -ItemType Directory -Path $path
     }
 
-    $source = $libPath + "\" + "$($pbixFile.BaseName).pbix"
-    $destination =  $libPath + "\" + $pbixFile.BaseName + "\" + "$($pbixFile.BaseName).pbix"
+    $source = "$($libPath)\$($fileName).pbix"
+    $destination =  "$($libPath)\$($fileName)\$($fileName).pbix"
 
     Move-Item -Path $source -Destination $destination
 
-    PBIXtoPBIP_PBITConversion -PBIXFilePath $destination -ConversionFileType "pbip"
+    Start-Process -filePath $destination
 
-    $pbipReportPath = "$($path)\$($pbixFile.BaseName).Report"
+    $pbipReportPath = "$($path)\$($fileName).Report"
+
+    $default = 1
+    do {
+        $response = Read-Host -Prompt "Did you save the file as PBIP? (Press Y to continue)"
+        if ($response -eq 'Y') {
+            if (Test-Path -Path $pbipReportPath) {
+                $default = 0
+            }
+        }
+    } while ($default -eq 1)
 
     # Ensure workspace exists
     $workspaceId = New-FabricWorkspace  -name $workspaceName -skipErrorIfExists
