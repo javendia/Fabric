@@ -21,10 +21,10 @@ Scripts to automate actions over a tabular model
         ---
         - The first step is to extract the metadata from the tabular model. We can get it using Tabular Editor as follows:
             - Connect with the desired tabular model
-            ![img](tabular\media\tabular-01.png)
+            ![img](./tabular/media/tabular-01.png)
             - Save metadata
-            ![img](tabular\media\tabular-02.png)
-            ![img](tabular\media\tabular-03.png)
+            ![img](./tabular/media/tabular-02.png)
+            ![img](./tabular/media/tabular-03.png)
         - Secondly, we need to fill a [dictionary CSV](https://github.com/javendia/Fabric/blob/main/tabular/Dictionary.csv), where each key-value represents an entity model and its data source (table or view)
         - Then, we will open the extracted tabular model and finally run the script on Tabular Editor. It prompts three values to the user:
             - The SQL connection string to the lakehouse SQL endpoint, used as destination server
