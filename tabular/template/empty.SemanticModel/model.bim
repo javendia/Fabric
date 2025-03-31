@@ -1,0 +1,3850 @@
+{
+  "name": "Urgencias",
+  "compatibilityLevel": 1500,
+  "model": {
+    "name": "Urgencias",
+    "culture": "es-ES",
+    "discourageImplicitMeasures": true,
+    "dataSources": [
+      {
+        "type": "structured",
+        "name": "HClinicaDWFSA",
+        "connectionDetails": {
+          "protocol": "tds",
+          "address": {
+            "server": "V-RSA-DWCDES.RIBERASALUDAPP.COM,1699",
+            "database": "HClinicaDWFSA"
+          },
+          "authentication": null,
+          "query": null
+        },
+        "credential": {
+          "AuthenticationKind": "ServiceAccount",
+          "kind": "SQL",
+          "path": "v-rsa-dwcdes.riberasaludapp.com,1699;HClinicaDWFSA",
+          "EncryptConnection": false
+        }
+      }
+    ],
+    "tables": [
+      {
+        "name": "Colectivo",
+        "columns": [
+          {
+            "name": "Aseguradora",
+            "dataType": "string",
+            "sourceColumn": "Aseguradora"
+          },
+          {
+            "name": "SKColectivo",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKColectivo"
+          },
+          {
+            "name": "Colectivo",
+            "dataType": "string",
+            "sourceColumn": "Colectivo"
+          },
+          {
+            "name": "Grupo Colectivo",
+            "dataType": "string",
+            "sourceColumn": "Grupo Colectivo"
+          },
+          {
+            "name": "Nivel1",
+            "dataType": "string",
+            "sourceColumn": "Nivel1"
+          },
+          {
+            "name": "NIvel2",
+            "dataType": "string",
+            "sourceColumn": "NIvel2"
+          },
+          {
+            "name": "Nivel3",
+            "dataType": "string",
+            "sourceColumn": "Nivel3"
+          },
+          {
+            "name": "Colectivo Local",
+            "dataType": "string",
+            "sourceColumn": "Colectivo Local"
+          },
+          {
+            "name": "Cuenta Contable",
+            "dataType": "string",
+            "sourceColumn": "Cuenta Contable"
+          },
+          {
+            "name": "Garante BC",
+            "dataType": "string",
+            "sourceColumn": "Garante BC"
+          },
+          {
+            "name": "Tipo Contrato",
+            "dataType": "string",
+            "sourceColumn": "Tipo Contrato"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vColectivo = Source{[Schema=\"dim\",Item=\"TAB_vColectivo\"]}[Data]",
+                "in",
+                "    dim_TAB_vColectivo"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Grupos colectivos",
+            "levels": [
+              {
+                "name": "Grupo Colectivo",
+                "ordinal": 0,
+                "column": "Grupo Colectivo"
+              },
+              {
+                "name": "Colectivo",
+                "ordinal": 1,
+                "column": "Colectivo"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Tiempo",
+        "isHidden": true,
+        "columns": [
+          {
+            "name": "CodTiempo",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "CodTiempo"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vTiempo = Source{[Schema=\"dim\",Item=\"TAB_vTiempo\"]}[Data],",
+                "    #\"Columnas quitadas\" = Table.RemoveColumns(dim_TAB_vTiempo,{\"Año\", \"Año En Curso\", \"Año Pasado\", \"Año-Mes\", \"Ayer\", \"Fecha\", \"Dia Semana\", \"NumDiaSemana\", \"Es Fin De Semana\", \"FechaStr\", \"Hoy\", \"Mes\", \"Mes En curso\", \"Mes Pasado\", \"Num Mes\", \"NumAnyoMes\", \"Semana\", \"NumSemana\", \"Semana En curso\", \"Semana Pasada\", \"Trimestre\", \"NumDiaMes\", \"Mañana\", \"Mes Actual\", \"Ultimos Siete Dias\", \"Ultimos Doce Meses\"})",
+                "in",
+                "    #\"Columnas quitadas\""
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Concesión",
+        "columns": [
+          {
+            "name": "SKConcesion",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKConcesion"
+          },
+          {
+            "name": "Concesión",
+            "dataType": "string",
+            "sourceColumn": "Concesión"
+          },
+          {
+            "name": "Grupo",
+            "dataType": "string",
+            "sourceColumn": "Grupo"
+          },
+          {
+            "name": "Zona",
+            "dataType": "string",
+            "sourceColumn": "Zona"
+          },
+          {
+            "name": "Logo",
+            "dataType": "string",
+            "sourceColumn": "Logo"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dimcorp_TAB_vConcesión = Source{[Schema=\"dim\",Item=\"TAB_vConcesion\"]}[Data]",
+                "in",
+                "    dimcorp_TAB_vConcesión"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Concesiones",
+            "levels": [
+              {
+                "name": "Zona",
+                "ordinal": 0,
+                "column": "Zona"
+              },
+              {
+                "name": "Concesión",
+                "ordinal": 1,
+                "column": "Concesión"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "ConcesionOculta",
+        "isHidden": true,
+        "columns": [
+          {
+            "name": "SKConcesion",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKConcesion"
+          },
+          {
+            "name": "Concesion",
+            "dataType": "string",
+            "sourceColumn": "Concesion"
+          },
+          {
+            "name": "Grupo",
+            "dataType": "string",
+            "sourceColumn": "Grupo"
+          },
+          {
+            "name": "Zona",
+            "dataType": "string",
+            "sourceColumn": "Zona"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dimcorp_TAB_vConcesionOculta = Source{[Schema=\"dim\",Item=\"TAB_vConcesionOculta\"]}[Data]",
+                "in",
+                "    dimcorp_TAB_vConcesionOculta"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Médico",
+        "columns": [
+          {
+            "name": "SKMedico",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKMedico"
+          },
+          {
+            "name": "DNI Médico",
+            "dataType": "string",
+            "sourceColumn": "DNI Médico"
+          },
+          {
+            "name": "Clave Médico",
+            "dataType": "string",
+            "sourceColumn": "Clave Médico"
+          },
+          {
+            "name": "Médico",
+            "dataType": "string",
+            "sourceColumn": "Médico"
+          },
+          {
+            "name": "Zona Básica",
+            "dataType": "string",
+            "sourceColumn": "Zona Básica"
+          },
+          {
+            "name": "Centro Médico",
+            "dataType": "string",
+            "sourceColumn": "Centro Médico"
+          },
+          {
+            "name": "Servicio",
+            "dataType": "string",
+            "sourceColumn": "Servicio"
+          },
+          {
+            "name": "Cupo Activo",
+            "dataType": "string",
+            "sourceColumn": "Cupo Activo"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vMedicos = Source{[Schema=\"dim\",Item=\"TAB_vMedicos\"]}[Data]",
+                "in",
+                "    dim_TAB_vMedicos"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Centro - Médico",
+            "levels": [
+              {
+                "name": "Médico",
+                "ordinal": 1,
+                "column": "Médico"
+              },
+              {
+                "name": "Centro Médico",
+                "ordinal": 0,
+                "column": "Centro Médico"
+              }
+            ]
+          },
+          {
+            "name": "Servicio - Médico",
+            "levels": [
+              {
+                "name": "Médico",
+                "ordinal": 1,
+                "column": "Médico"
+              },
+              {
+                "name": "Servicio",
+                "ordinal": 0,
+                "column": "Servicio"
+              }
+            ]
+          },
+          {
+            "name": "Zona Básica - Médico",
+            "levels": [
+              {
+                "name": "Médico",
+                "ordinal": 2,
+                "column": "Médico"
+              },
+              {
+                "name": "Centro Médico",
+                "ordinal": 1,
+                "column": "Centro Médico"
+              },
+              {
+                "name": "Zona Básica",
+                "ordinal": 0,
+                "column": "Zona Básica"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Diagnóstico CIE9",
+        "columns": [
+          {
+            "name": "SKDiagnostico",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKDiagnostico"
+          },
+          {
+            "name": "Capítulo",
+            "dataType": "string",
+            "sourceColumn": "Capítulo"
+          },
+          {
+            "name": "Código",
+            "dataType": "string",
+            "sourceColumn": "Código"
+          },
+          {
+            "name": "Código-Diagnóstico",
+            "dataType": "string",
+            "sourceColumn": "Código-Diagnóstico"
+          },
+          {
+            "name": "Diagnóstico",
+            "dataType": "string",
+            "sourceColumn": "Diagnóstico"
+          },
+          {
+            "name": "Sección",
+            "dataType": "string",
+            "sourceColumn": "Sección"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vDiagnostico = Source{[Schema=\"dim\",Item=\"TAB_vDiagnostico\"]}[Data]",
+                "in",
+                "    dim_TAB_vDiagnostico"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Clasificación",
+            "levels": [
+              {
+                "name": "Capítulo",
+                "ordinal": 0,
+                "column": "Capítulo"
+              },
+              {
+                "name": "Sección",
+                "ordinal": 1,
+                "column": "Sección"
+              },
+              {
+                "name": "Diagnóstico",
+                "ordinal": 2,
+                "column": "Diagnóstico"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Diagnóstico CIE10",
+        "columns": [
+          {
+            "name": "SKDiagnostico",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKDiagnostico"
+          },
+          {
+            "name": "Capítulo",
+            "dataType": "string",
+            "sourceColumn": "Capítulo"
+          },
+          {
+            "name": "Código",
+            "dataType": "string",
+            "sourceColumn": "Código"
+          },
+          {
+            "name": "Código-Diagnóstico",
+            "dataType": "string",
+            "sourceColumn": "Código-Diagnóstico"
+          },
+          {
+            "name": "Diagnóstico",
+            "dataType": "string",
+            "sourceColumn": "Diagnóstico"
+          },
+          {
+            "name": "Sección",
+            "dataType": "string",
+            "sourceColumn": "Sección"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vDiagnosticoCIE10 = Source{[Schema=\"dim\",Item=\"TAB_vDiagnosticoCIE10\"]}[Data]",
+                "in",
+                "    dim_TAB_vDiagnosticoCIE10"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Clasificación",
+            "levels": [
+              {
+                "name": "Capítulo",
+                "ordinal": 0,
+                "column": "Capítulo"
+              },
+              {
+                "name": "Sección",
+                "ordinal": 1,
+                "column": "Sección"
+              },
+              {
+                "name": "Diagnóstico",
+                "ordinal": 2,
+                "column": "Diagnóstico"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Tipo Urgencia",
+        "columns": [
+          {
+            "name": "SKTipoUrgencia",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKTipoUrgencia"
+          },
+          {
+            "name": "Tipo Urgencia",
+            "dataType": "string",
+            "sourceColumn": "Tipo Urgencia"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vTipoUrgencia = Source{[Schema=\"dim\",Item=\"TAB_vTipoUrgencia\"]}[Data]",
+                "in",
+                "    dim_TAB_vTipoUrgencia"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Paciente",
+        "columns": [
+          {
+            "name": "SKPaciente",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKPaciente"
+          },
+          {
+            "name": "Autorizacion",
+            "dataType": "int64",
+            "sourceColumn": "Autorizacion"
+          },
+          {
+            "name": "BKCodPaciente",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "BKCodPaciente"
+          },
+          {
+            "name": "CodHistoria",
+            "dataType": "string",
+            "sourceColumn": "CodHistoria",
+            "displayFolder": "Identificación"
+          },
+          {
+            "name": "SIP",
+            "dataType": "string",
+            "sourceColumn": "SIP",
+            "displayFolder": "Identificación"
+          },
+          {
+            "name": "Nif",
+            "dataType": "string",
+            "sourceColumn": "Nif",
+            "displayFolder": "Identificación"
+          },
+          {
+            "name": "NumAfiliacion",
+            "dataType": "string",
+            "sourceColumn": "NumAfiliacion"
+          },
+          {
+            "name": "Teléfonos",
+            "dataType": "string",
+            "sourceColumn": "Teléfonos"
+          },
+          {
+            "name": "Departamento",
+            "dataType": "string",
+            "sourceColumn": "Departamento",
+            "displayFolder": "Acreditación"
+          },
+          {
+            "name": "País Nacimiento",
+            "dataType": "string",
+            "sourceColumn": "País Nacimiento",
+            "displayFolder": "Ubicación"
+          },
+          {
+            "name": "Hospital Referencia",
+            "dataType": "string",
+            "sourceColumn": "Hospital Referencia",
+            "displayFolder": "Acreditación"
+          },
+          {
+            "name": "Nombre y Apellidos",
+            "dataType": "string",
+            "sourceColumn": "Nombre y Apellidos",
+            "displayFolder": "Identificación"
+          },
+          {
+            "name": "Género",
+            "dataType": "string",
+            "sourceColumn": "Género",
+            "displayFolder": "Identificación"
+          },
+          {
+            "name": "Año Nacimiento",
+            "dataType": "int64",
+            "sourceColumn": "Año Nacimiento",
+            "displayFolder": "Identificación"
+          },
+          {
+            "name": "Centro de Salud",
+            "dataType": "string",
+            "sourceColumn": "Centro de Salud"
+          },
+          {
+            "name": "Código Colectivo",
+            "dataType": "string",
+            "sourceColumn": "Código Colectivo"
+          },
+          {
+            "name": "Colectivo",
+            "dataType": "string",
+            "sourceColumn": "Colectivo"
+          },
+          {
+            "name": "Edad",
+            "dataType": "int64",
+            "sourceColumn": "Edad",
+            "displayFolder": "Identificación"
+          },
+          {
+            "name": "Usuario Portal",
+            "dataType": "string",
+            "sourceColumn": "Usuario Portal",
+            "displayFolder": "Identificación"
+          },
+          {
+            "name": "Rango Etario 5",
+            "dataType": "string",
+            "sourceColumn": "Rango Etario 5",
+            "displayFolder": "Identificación"
+          },
+          {
+            "name": "OrdenRangoEtario5",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "OrdenRangoEtario5"
+          },
+          {
+            "name": "Rango Etario 10",
+            "dataType": "string",
+            "sourceColumn": "Rango Etario 10",
+            "displayFolder": "Identificación"
+          },
+          {
+            "name": "OrdenRangoEtario10",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "OrdenRangoEtario10"
+          },
+          {
+            "name": "Fecha Nacimiento",
+            "dataType": "string",
+            "sourceColumn": "Fecha Nacimiento",
+            "displayFolder": "Identificación"
+          },
+          {
+            "name": "Fecha Fallecimiento",
+            "dataType": "string",
+            "sourceColumn": "Fecha Fallecimiento",
+            "displayFolder": "Identificación"
+          },
+          {
+            "name": "Colectivo Corte Tarjeta",
+            "dataType": "string",
+            "sourceColumn": "Colectivo Corte Tarjeta"
+          },
+          {
+            "name": "Dni Médico Cupo",
+            "dataType": "string",
+            "sourceColumn": "Dni Médico Cupo",
+            "displayFolder": "Ubicación"
+          },
+          {
+            "name": "Médico Cupo",
+            "dataType": "string",
+            "sourceColumn": "Médico Cupo",
+            "displayFolder": "Ubicación"
+          },
+          {
+            "name": "Zona Básica",
+            "dataType": "string",
+            "sourceColumn": "Zona Básica",
+            "displayFolder": "Ubicación"
+          },
+          {
+            "name": "SKCatCronicos",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKCatCronicos"
+          },
+          {
+            "name": "SKCentroSalud",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKCentroSalud"
+          },
+          {
+            "name": "SKConcesion",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKConcesion"
+          },
+          {
+            "name": "SKTipoSalida",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKTipoSalida"
+          },
+          {
+            "name": "Residencia",
+            "dataType": "string",
+            "sourceColumn": "Residencia"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vPacientes_Urgencias = Source{[Schema=\"dim\",Item=\"TAB_vPacientes_Urgencias\"]}[Data]",
+                "in",
+                "    dim_TAB_vPacientes_Urgencias"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Rango Etario",
+        "columns": [
+          {
+            "name": "Rango5",
+            "dataType": "string",
+            "sourceColumn": "Rango5"
+          },
+          {
+            "name": "Rango10",
+            "dataType": "string",
+            "sourceColumn": "Rango10"
+          },
+          {
+            "name": "OrdenRangoEtario",
+            "dataType": "int64",
+            "sourceColumn": "OrdenRangoEtario"
+          },
+          {
+            "name": "OrdenRangoEtarioDetallado",
+            "dataType": "int64",
+            "sourceColumn": "OrdenRangoEtarioDetallado"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vRangoEtario = Source{[Schema=\"dim\",Item=\"TAB_vRangoEtario\"]}[Data]",
+                "in",
+                "    dim_TAB_vRangoEtario"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "RangoEtario",
+            "levels": [
+              {
+                "name": "Rango10",
+                "ordinal": 0,
+                "column": "Rango10"
+              },
+              {
+                "name": "Rango5",
+                "ordinal": 1,
+                "column": "Rango5"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Urgencias",
+        "isHidden": true,
+        "columns": [
+          {
+            "name": "SPKUrgencias",
+            "dataType": "int64",
+            "sourceColumn": "SPKUrgencias"
+          },
+          {
+            "name": "BKEpisodio",
+            "dataType": "string",
+            "sourceColumn": "BKEpisodio"
+          },
+          {
+            "name": "SKPaciente",
+            "dataType": "int64",
+            "sourceColumn": "SKPaciente"
+          },
+          {
+            "name": "ColorUrgTriaje",
+            "dataType": "int64",
+            "sourceColumn": "ColorUrgTriaje"
+          },
+          {
+            "name": "FEntrada",
+            "dataType": "int64",
+            "sourceColumn": "FEntrada"
+          },
+          {
+            "name": "SKCentro",
+            "dataType": "int64",
+            "sourceColumn": "SKCentro"
+          },
+          {
+            "name": "SKColectivo",
+            "dataType": "int64",
+            "sourceColumn": "SKColectivo"
+          },
+          {
+            "name": "SKDiagnostico",
+            "dataType": "int64",
+            "sourceColumn": "SKDiagnostico"
+          },
+          {
+            "name": "HoraAlta",
+            "dataType": "int64",
+            "sourceColumn": "HoraAlta"
+          },
+          {
+            "name": "SKMedico",
+            "dataType": "int64",
+            "sourceColumn": "SKMedico"
+          },
+          {
+            "name": "SKCodDestAlta",
+            "dataType": "int64",
+            "sourceColumn": "SKCodDestAlta"
+          },
+          {
+            "name": "IngresoPlanta",
+            "dataType": "int64",
+            "sourceColumn": "IngresoPlanta"
+          },
+          {
+            "name": "SKServicio",
+            "dataType": "int64",
+            "sourceColumn": "SKServicio"
+          },
+          {
+            "name": "SKConcesion",
+            "dataType": "int64",
+            "sourceColumn": "SKConcesion"
+          },
+          {
+            "name": "ColorUrg",
+            "dataType": "int64",
+            "sourceColumn": "ColorUrg"
+          },
+          {
+            "name": "Interconsulta",
+            "dataType": "int64",
+            "sourceColumn": "Interconsulta"
+          },
+          {
+            "name": "Observacion",
+            "dataType": "int64",
+            "sourceColumn": "Observacion"
+          },
+          {
+            "name": "HoraEntrada",
+            "dataType": "int64",
+            "sourceColumn": "HoraEntrada"
+          },
+          {
+            "name": "IngresoParto",
+            "dataType": "int64",
+            "sourceColumn": "IngresoParto"
+          },
+          {
+            "name": "FAlta",
+            "dataType": "int64",
+            "sourceColumn": "FAlta"
+          },
+          {
+            "name": "TipoUrg",
+            "dataType": "int64",
+            "sourceColumn": "TipoUrg"
+          },
+          {
+            "name": "SKCentroSaludPaciente",
+            "dataType": "int64",
+            "sourceColumn": "SKCentroSaludPaciente"
+          },
+          {
+            "name": "SKMedicoPaciente",
+            "dataType": "int64",
+            "sourceColumn": "SKMedicoPaciente"
+          },
+          {
+            "name": "SKPacientePHM",
+            "dataType": "int64",
+            "sourceColumn": "SKPacientePHM"
+          },
+          {
+            "name": "SKServicioIngreso",
+            "dataType": "int64",
+            "sourceColumn": "SKServicioIngreso"
+          },
+          {
+            "name": "SKMedicoEPOrigen",
+            "dataType": "int64",
+            "sourceColumn": "SKMedicoEPOrigen"
+          },
+          {
+            "name": "SKServicioIngresoEPOrigen",
+            "dataType": "int64",
+            "sourceColumn": "SKServicioIngresoEPOrigen"
+          },
+          {
+            "name": "ColorUrgEPOrigen",
+            "dataType": "int64",
+            "sourceColumn": "ColorUrgEPOrigen"
+          },
+          {
+            "name": "ColorUrgTriajeEPOrigen",
+            "dataType": "int64",
+            "sourceColumn": "ColorUrgTriajeEPOrigen"
+          },
+          {
+            "name": "SKCodDestinoAltaEPOrigen",
+            "dataType": "int64",
+            "sourceColumn": "SKCodDestinoAltaEPOrigen"
+          },
+          {
+            "name": "FAltaEPOrigen",
+            "dataType": "int64",
+            "sourceColumn": "FAltaEPOrigen"
+          },
+          {
+            "name": "EsFestivoFEntrada",
+            "dataType": "int64",
+            "sourceColumn": "EsFestivoFEntrada"
+          },
+          {
+            "name": "EsFestivoFAlta",
+            "dataType": "int64",
+            "sourceColumn": "EsFestivoFAlta"
+          },
+          {
+            "name": "SKDiagnosticoCIE10",
+            "dataType": "int64",
+            "sourceColumn": "SKDiagnosticoCIE10"
+          },
+          {
+            "name": "OrdenRangoEtario",
+            "dataType": "int64",
+            "sourceColumn": "OrdenRangoEtario"
+          },
+          {
+            "name": "BKCodPacienteUnico",
+            "dataType": "string",
+            "sourceColumn": "BKCodPacienteUnico"
+          },
+          {
+            "name": "TEsperaTriaje",
+            "dataType": "int64",
+            "sourceColumn": "TEsperaTriaje"
+          },
+          {
+            "name": "TRespuesta",
+            "dataType": "int64",
+            "sourceColumn": "TRespuesta"
+          },
+          {
+            "name": "TEspera",
+            "dataType": "int64",
+            "sourceColumn": "TEspera"
+          },
+          {
+            "name": "TIngresoPlanta",
+            "dataType": "int64",
+            "sourceColumn": "TIngresoPlanta"
+          },
+          {
+            "name": "Reingreso24horas",
+            "dataType": "int64",
+            "sourceColumn": "Reingreso24horas"
+          },
+          {
+            "name": "Reingreso72horas",
+            "dataType": "int64",
+            "sourceColumn": "Reingreso72horas"
+          },
+          {
+            "name": "EdadPacienteUrgencias",
+            "dataType": "int64",
+            "sourceColumn": "EdadPacienteUrgencias"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    fact_TAB_vUrgencias = Source{[Schema=\"fact\",Item=\"TAB_vUrgencias\"]}[Data]",
+                "in",
+                "    fact_TAB_vUrgencias"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Días",
+            "expression": "COUNTROWS(Tiempo)",
+            "formatString": "#,##0",
+            "isHidden": true
+          },
+          {
+            "name": "Tiempo espera triaje",
+            "expression": " SUM(Urgencias[TEsperaTriaje])",
+            "formatString": "#,##0",
+            "isHidden": true
+          },
+          {
+            "name": "Tiempo Respuesta",
+            "expression": "  SUM(Urgencias[TRespuesta])",
+            "formatString": "#,##0",
+            "displayFolder": "Tiempo Respuesta"
+          },
+          {
+            "name": "Tiempo espera atención",
+            "expression": " sum(Urgencias[TEspera])",
+            "formatString": "#,##0",
+            "displayFolder": "Tiempo Espera"
+          },
+          {
+            "name": "Nº Urgencias",
+            "expression": " COUNTROWS(Urgencias)",
+            "formatString": "#,##0"
+          },
+          {
+            "name": "Nº de Pacientes Distintos",
+            "expression": " DISTINCTCOUNT(Urgencias[BKCodPacienteUnico])",
+            "formatString": "#,##0"
+          },
+          {
+            "name": "Urgencias Ingresadas por parto",
+            "expression": " sum(Urgencias[IngresoParto])",
+            "formatString": "#,##0"
+          },
+          {
+            "name": "Tiempo Ingreso Planta",
+            "expression": " sum(Urgencias[TIngresoPlanta])",
+            "formatString": "#,##0",
+            "isHidden": true
+          },
+          {
+            "name": "Media Urgencias por día",
+            "expression": " DIVIDE( [Nº Urgencias], [Días], 0)",
+            "formatString": "0.00"
+          },
+          {
+            "name": "Urgencias en Curso",
+            "expression": " IF(Urgencias[Nº Urgencias]=0, BLANK(),CALCULATE(Urgencias[Nº Urgencias],'Fecha Alta'[CodTiempo]=0))",
+            "formatString": "#,##0"
+          },
+          {
+            "name": "Urgencias Atendidas No Capita",
+            "expression": " IF(Urgencias[Nº Urgencias] - CALCULATE(Urgencias[Nº Urgencias],Colectivo[Grupo Colectivo]=\"CAPITA\")<0,BLANK(),Urgencias[Nº Urgencias] - CALCULATE(Urgencias[Nº Urgencias],Colectivo[Grupo Colectivo]=\"CAPITA\"))",
+            "formatString": "#,##0"
+          },
+          {
+            "name": "Fugados",
+            "expression": "IF(Urgencias[Nº Urgencias]=0,BLANK(),CALCULATE(Urgencias[Nº Urgencias],'Destino Alta'[Destino Alta]=\"Fugado\"))",
+            "formatString": "#,##0",
+            "displayFolder": "Destino Alta"
+          },
+          {
+            "name": "Edad Pacientes",
+            "expression": [
+              " ",
+              "DIVIDE(",
+              "    SUM('Urgencias'[EdadPacienteUrgencias]), ",
+              "    COUNT('Urgencias'[EdadPacienteUrgencias]), ",
+              "    0",
+              ")"
+            ],
+            "formatString": "0.00"
+          },
+          {
+            "name": "Tiempo Espera Atención (sin fugados)",
+            "expression": "[Tiempo espera atención] - (CALCULATE([Tiempo espera atención],'Destino Alta'[Destino Alta]=\"Fugado\"))",
+            "formatString": "#,##0",
+            "isHidden": true
+          },
+          {
+            "name": "Tiempo Respuesta (sin fugados)",
+            "expression": "[Tiempo respuesta] - CALCULATE([Tiempo respuesta],'Destino Alta'[Destino Alta]=\"Fugado\")",
+            "formatString": "#,##0",
+            "isHidden": true
+          },
+          {
+            "name": "Urgencias atendidas (sin fugados)",
+            "expression": "Urgencias[Nº Urgencias]-Urgencias[Fugados]",
+            "formatString": "#,##0"
+          },
+          {
+            "name": "Tiempo medio espera",
+            "expression": "DIVIDE([Tiempo Espera Atención (sin fugados)],Urgencias[Urgencias atendidas (sin fugados)], 0)",
+            "formatString": "#,##0.00",
+            "displayFolder": "Tiempo Espera"
+          },
+          {
+            "name": "Alta Voluntaria",
+            "expression": "IF(Urgencias[Nº Urgencias] = 0, BLANK(),CALCULATE(Urgencias[Nº Urgencias],'Destino Alta'[Destino Alta]=\"Alta voluntaria\"))",
+            "formatString": "#,##0",
+            "displayFolder": "Destino Alta"
+          },
+          {
+            "name": "Alta a domicilio",
+            "expression": "IF(Urgencias[Nº Urgencias]=0,BLANK(),CALCULATE(Urgencias[Nº Urgencias],'Destino Alta'[Destino Alta]=\"Domicilio\"))",
+            "formatString": "#,##0",
+            "displayFolder": "Destino Alta"
+          },
+          {
+            "name": "Exitus",
+            "expression": "IF(Urgencias[Nº Urgencias]=0,BLANK(),CALCULATE(Urgencias[Nº Urgencias],'Destino Alta'[Destino Alta]=\"Éxitus\"))",
+            "formatString": "#,##0",
+            "displayFolder": "Destino Alta"
+          },
+          {
+            "name": "Urg. Trasladadas al Hospital",
+            "expression": "IF(Urgencias[Nº Urgencias]=0,BLANK(),CALCULATE(Urgencias[Nº Urgencias],'Destino Alta'[Destino Alta]=\"Traslado Hospital\"))",
+            "formatString": "#,##0",
+            "displayFolder": "Destino Alta"
+          },
+          {
+            "name": "Urgencias trasladadas a Otros Hospitales",
+            "expression": "IF(Urgencias[Nº Urgencias]=0,BLANK(),CALCULATE(Urgencias[Nº Urgencias],'Destino Alta'[Destino Alta]=\"Traslado a otro Hospital\"))",
+            "formatString": "#,##0",
+            "displayFolder": "Destino Alta"
+          },
+          {
+            "name": "Urgencias x 1000 hab",
+            "expression": "DIVIDE((CALCULATE(Urgencias[Nº Urgencias],Colectivo[Grupo Colectivo]=\"CAPITA\"))*1000,[Población])",
+            "formatString": "0.00"
+          },
+          {
+            "name": "Paso a Hospital",
+            "expression": "IF(Urgencias[Nº Urgencias]=0, BLANK(), CALCULATE(Urgencias[Nº Urgencias],'Destino Alta'[Destino Alta]=\"Paso a Hospital\"))",
+            "formatString": "#,##0",
+            "displayFolder": "Destino Alta"
+          },
+          {
+            "name": "Altas Otros Destinos",
+            "expression": "Urgencias[Nº Urgencias]-[Alta Voluntaria]-[Alta a domicilio]-[Exitus]-[Fugados]-[Paso a Hospital]-[Urg. Trasladadas al Hospital]",
+            "formatString": "#,##0",
+            "displayFolder": "Destino Alta"
+          },
+          {
+            "name": "% Mortalidad",
+            "expression": "DIVIDE([Exitus],Urgencias[Nº Urgencias], 0)",
+            "formatString": "0.00 %;-0.00 %;0.00 %"
+          },
+          {
+            "name": "Reingresos antes de 24h",
+            "expression": "SUM(Urgencias[Reingreso24horas])",
+            "formatString": "#,##0",
+            "displayFolder": "Reingresos"
+          },
+          {
+            "name": "Reingresos antes de 72h",
+            "expression": "SUM(Urgencias[Reingreso72horas])",
+            "formatString": "#,##0",
+            "displayFolder": "Reingresos"
+          },
+          {
+            "name": "% Reingresos 24h",
+            "expression": "DIVIDE([Reingresos antes de 24h],(Urgencias[Nº Urgencias]-[Fugados]), 0)",
+            "formatString": "0.00 %;-0.00 %;0.00 %",
+            "displayFolder": "Reingresos"
+          },
+          {
+            "name": "% Reingresos 72h",
+            "expression": "DIVIDE([Reingresos antes de 72h],Urgencias[Nº Urgencias], 0)",
+            "formatString": "0.00 %;-0.00 %;0.00 %",
+            "displayFolder": "Reingresos"
+          },
+          {
+            "name": "Tiempo Espera Medio Urg. Sin prioridad",
+            "expression": "DIVIDE((CALCULATE([Tiempo Espera Atención (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Sin prioridad\")),(CALCULATE([Urgencias atendidas (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Sin prioridad\")))",
+            "formatString": "#,##0",
+            "displayFolder": "Tiempo Espera"
+          },
+          {
+            "name": "Tiempo Espera Medio Urg. Azules-Verdes",
+            "expression": "DIVIDE(CALCULATE([Tiempo Espera Atención (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Verdes\"||'Color Urgencia'[Color Urgencia]=\"Azules\"),CALCULATE([Urgencias atendidas (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Verdes\"||'Color Urgencia'[Color Urgencia]=\"Azules\"))",
+            "formatString": "#,##0",
+            "displayFolder": "Tiempo Espera"
+          },
+          {
+            "name": "Tiempo Espera Medio Urg. Amarillas",
+            "expression": "DIVIDE((CALCULATE([Tiempo Espera Atención (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Amarillas\")),(CALCULATE([Urgencias atendidas (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Amarillas\")))",
+            "formatString": "#,##0",
+            "displayFolder": "Tiempo Espera"
+          },
+          {
+            "name": "Tiempo medio de Respuesta",
+            "expression": "DIVIDE([Tiempo Respuesta (sin fugados)],Urgencias[Urgencias atendidas (sin fugados)])",
+            "formatString": "#,##0.00",
+            "displayFolder": "Tiempo Respuesta"
+          },
+          {
+            "name": "Tiempo medio espera triaje",
+            "expression": "DIVIDE([Tiempo espera triaje],Urgencias[Nº Urgencias], 0)",
+            "formatString": "#,##0.00",
+            "displayFolder": "Tiempo Espera"
+          },
+          {
+            "name": "Tiempo Medio Respuesta Urg. Leves",
+            "expression": "DIVIDE((CALCULATE([Tiempo Respuesta (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Azules\")),(CALCULATE([Urgencias atendidas (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Azules\")))",
+            "formatString": "#,##0.00",
+            "displayFolder": "Tiempo Respuesta"
+          },
+          {
+            "name": "Tiempo Medio Respuesta Urg. Moderadas",
+            "expression": "DIVIDE((CALCULATE([Tiempo Respuesta (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Verdes\")),(CALCULATE([Urgencias atendidas (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Verdes\")))",
+            "formatString": "#,##0.00",
+            "displayFolder": "Tiempo Respuesta"
+          },
+          {
+            "name": "Tiempo Medio Respuesta Urg. Graves",
+            "expression": "DIVIDE((CALCULATE([Tiempo Respuesta (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Amarillas\")),(CALCULATE([Urgencias atendidas (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Amarillas\")))",
+            "formatString": "#,##0.00",
+            "displayFolder": "Tiempo Respuesta"
+          },
+          {
+            "name": "Tiempo Medio Respuesta Urg. Muy Graves",
+            "expression": "DIVIDE((CALCULATE([Tiempo Respuesta (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Naranjas\")),(CALCULATE([Urgencias atendidas (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Naranjas\")))",
+            "formatString": "#,##0.00",
+            "displayFolder": "Tiempo Respuesta"
+          },
+          {
+            "name": "Tiempo Medio Respuesta Urg. Críticas",
+            "expression": "DIVIDE((CALCULATE([Tiempo Respuesta (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Rojas\")),(CALCULATE([Urgencias atendidas (sin fugados)],'Color Urgencia'[Color Urgencia]=\"Rojas\")))",
+            "formatString": "#,##0.00",
+            "displayFolder": "Tiempo Respuesta"
+          },
+          {
+            "name": "Urgencias Sin Prioridad",
+            "expression": "CALCULATE(Urgencias[Nº Urgencias],'Color Urgencia'[Color Urgencia]=\"Sin prioridad\")",
+            "formatString": "#,##0",
+            "displayFolder": "Color"
+          },
+          {
+            "name": "Urgencias Leves (Azul)",
+            "expression": "CALCULATE(Urgencias[Nº Urgencias],'Color Urgencia'[Color Urgencia]=\"Azules\")",
+            "formatString": "#,##0",
+            "displayFolder": "Color"
+          },
+          {
+            "name": "Urgencias Moderadas (Verdes)",
+            "expression": "CALCULATE(Urgencias[Nº Urgencias],'Color Urgencia'[Color Urgencia]=\"Verdes\")",
+            "formatString": "#,##0",
+            "displayFolder": "Color"
+          },
+          {
+            "name": "Urgencias Graves (Amarillas)",
+            "expression": "CALCULATE(Urgencias[Nº Urgencias],'Color Urgencia'[Color Urgencia]=\"Amarillas\")",
+            "formatString": "#,##0",
+            "displayFolder": "Color"
+          },
+          {
+            "name": "Urgencias Muy Graves (Naranja)",
+            "expression": "CALCULATE(Urgencias[Nº Urgencias],'Color Urgencia'[Color Urgencia]=\"Naranjas\")",
+            "formatString": "#,##0",
+            "displayFolder": "Color"
+          },
+          {
+            "name": "Urgencias Críticas (rojas)",
+            "expression": "CALCULATE(Urgencias[Nº Urgencias],'Color Urgencia'[Color Urgencia]=\"Rojas\")",
+            "formatString": "#,##0",
+            "displayFolder": "Color"
+          },
+          {
+            "name": "% Urgencias Leves",
+            "expression": "DIVIDE(([Urgencias Leves (Azul)] + [Urgencias Sin Prioridad]),Urgencias[Nº Urgencias])",
+            "formatString": "0.00 %;-0.00 %;0.00 %",
+            "displayFolder": "Color"
+          },
+          {
+            "name": "Ratio Urgencias IA",
+            "expression": "DIVIDE([Urgencias Ingresadas],Urgencias[Nº Urgencias], 0)",
+            "formatString": "0.00 %;-0.00 %;0.00 %"
+          },
+          {
+            "name": "Urgencias Ingresadas",
+            "expression": "SUM(Urgencias[IngresoPlanta])",
+            "formatString": "#,##0"
+          },
+          {
+            "name": "Ratio Urgencias IA sin partos",
+            "expression": "DIVIDE(([Urgencias Ingresadas] - [Urgencias Ingresadas por Parto]),Urgencias[Nº Urgencias])",
+            "formatString": "0.00 %;-0.00 %;0.00 %"
+          },
+          {
+            "name": "Urgencias no ingresadas",
+            "expression": "Urgencias[Nº Urgencias] - [Urgencias Ingresadas]",
+            "formatString": "#,##0"
+          },
+          {
+            "name": "Tiempo Medio Ingreso Planta (minutos)",
+            "expression": "DIVIDE([Tiempo Ingreso Planta],[Urgencias Ingresadas])",
+            "formatString": "#,##0.00"
+          },
+          {
+            "name": "Tiempo Proceso",
+            "expression": "IF([Tiempo medio de Respuesta] - [Tiempo medio espera]<0,0,[Tiempo medio de Respuesta] - [Tiempo medio espera])",
+            "formatString": "#,##0.00",
+            "displayFolder": "Tiempo Proceso"
+          }
+        ]
+      },
+      {
+        "name": "Población",
+        "isHidden": true,
+        "columns": [
+          {
+            "name": "SKConcesion",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKConcesion"
+          },
+          {
+            "name": "CodTiempo",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "CodTiempo"
+          },
+          {
+            "name": "Poblacion",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Poblacion"
+          },
+          {
+            "name": "SKCentro",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKCentro"
+          },
+          {
+            "name": "SKMedico",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKMedico"
+          },
+          {
+            "name": "Nivel Cronicidad",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "NivelCronicidad"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    fact_TAB_vPoblacionCentro = Source{[Schema=\"fact\",Item=\"TAB_vPoblacionCentro\"]}[Data]",
+                "in",
+                "    fact_TAB_vPoblacionCentro"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Población",
+            "expression": " CALCULATE(SUM('Población'[Poblacion]), LASTNONBLANK('Población'[CodTiempo], 1))",
+            "formatString": "#,##0"
+          }
+        ]
+      },
+      {
+        "name": "Centro",
+        "columns": [
+          {
+            "name": "SKCentro",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKCentro"
+          },
+          {
+            "name": "Centro",
+            "dataType": "string",
+            "sourceColumn": "Centro"
+          },
+          {
+            "name": "País",
+            "dataType": "string",
+            "sourceColumn": "País",
+            "displayFolder": "Ubicación"
+          },
+          {
+            "name": "Población",
+            "dataType": "string",
+            "sourceColumn": "Población",
+            "displayFolder": "Ubicación"
+          },
+          {
+            "name": "Provincia",
+            "dataType": "string",
+            "sourceColumn": "Provincia",
+            "displayFolder": "Ubicación"
+          },
+          {
+            "name": "Zona Básica",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Zona Básica"
+          },
+          {
+            "name": "Es Hospital",
+            "dataType": "string",
+            "sourceColumn": "Es Hospital"
+          },
+          {
+            "name": "División",
+            "dataType": "string",
+            "sourceColumn": "División"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vCentro = Source{[Schema=\"dim\",Item=\"TAB_vCentro\"]}[Data]",
+                "in",
+                "    dim_TAB_vCentro"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Zona Básica-Centro",
+            "levels": [
+              {
+                "name": "Zona Básica",
+                "ordinal": 0,
+                "column": "Zona Básica"
+              },
+              {
+                "name": "Centro",
+                "ordinal": 1,
+                "column": "Centro"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Hora Entrada",
+        "columns": [
+          {
+            "name": "HoraId",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "HoraId"
+          },
+          {
+            "name": "Franja Horaria",
+            "dataType": "string",
+            "sourceColumn": "Franja Horaria"
+          },
+          {
+            "name": "Turno",
+            "dataType": "string",
+            "sourceColumn": "Turno"
+          },
+          {
+            "name": "Hora",
+            "dataType": "string",
+            "sourceColumn": "Hora",
+            "sortByColumn": "HoraId"
+          },
+          {
+            "name": "Orden",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Orden"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vFranjaHoraria = Source{[Schema=\"dim\",Item=\"TAB_vFranjaHoraria\"]}[Data]",
+                "in",
+                "    dim_TAB_vFranjaHoraria"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Episodio Previo Reingreso - Servicio Médico",
+        "isHidden": true,
+        "columns": [
+          {
+            "name": "Código",
+            "dataType": "string",
+            "sourceColumn": "Código"
+          },
+          {
+            "name": "Código Oficial",
+            "dataType": "string",
+            "sourceColumn": "Código Oficial"
+          },
+          {
+            "name": "Desc Grupo",
+            "dataType": "string",
+            "sourceColumn": "Desc Grupo"
+          },
+          {
+            "name": "Sk Corp",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Sk Corp"
+          },
+          {
+            "name": "Servicio",
+            "dataType": "string",
+            "sourceColumn": "Servicio"
+          },
+          {
+            "name": "Servicio Alumbra",
+            "dataType": "string",
+            "sourceColumn": "Servicio Alumbra",
+            "displayFolder": "Agrupación"
+          },
+          {
+            "name": "Servicio Especializada CEX",
+            "dataType": "string",
+            "sourceColumn": "Servicio Especializada CEX"
+          },
+          {
+            "name": "Servicio LECEX",
+            "dataType": "string",
+            "sourceColumn": "Servicio LECEX",
+            "displayFolder": "Agrupación"
+          },
+          {
+            "name": "Servicio LEQ",
+            "dataType": "string",
+            "sourceColumn": "Servicio LEQ"
+          },
+          {
+            "name": "Servicio Local",
+            "dataType": "string",
+            "sourceColumn": "Servicio Local"
+          },
+          {
+            "name": "Servicio Pruebas",
+            "dataType": "string",
+            "sourceColumn": "Servicio Pruebas"
+          },
+          {
+            "name": "Servicio Quirúrgico",
+            "dataType": "string",
+            "sourceColumn": "Servicio Quirúrgico"
+          },
+          {
+            "name": "Tipo Servicio",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Tipo Servicio"
+          },
+          {
+            "name": "SK Servicio",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SK Servicio"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vServicio = Source{[Schema=\"dim\",Item=\"TAB_vServicio\"]}[Data]",
+                "in",
+                "    dim_TAB_vServicio"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Centro Salud Paciente",
+        "columns": [
+          {
+            "name": "SKCentro",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKCentro"
+          },
+          {
+            "name": "Centro",
+            "dataType": "string",
+            "sourceColumn": "Centro"
+          },
+          {
+            "name": "País",
+            "dataType": "string",
+            "sourceColumn": "País",
+            "displayFolder": "Ubicación"
+          },
+          {
+            "name": "Población",
+            "dataType": "string",
+            "sourceColumn": "Población",
+            "displayFolder": "Ubicación"
+          },
+          {
+            "name": "Provincia",
+            "dataType": "string",
+            "sourceColumn": "Provincia",
+            "displayFolder": "Ubicación"
+          },
+          {
+            "name": "Zona Básica",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Zona Básica"
+          },
+          {
+            "name": "Es Hospital",
+            "dataType": "string",
+            "sourceColumn": "Es Hospital"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vCentro = Source{[Schema=\"dim\",Item=\"TAB_vCentro\"]}[Data]",
+                "in",
+                "    dim_TAB_vCentro"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Zona Básica-Centro",
+            "levels": [
+              {
+                "name": "Zona Básica",
+                "ordinal": 0,
+                "column": "Zona Básica"
+              },
+              {
+                "name": "Centro",
+                "ordinal": 1,
+                "column": "Centro"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Episodio Previo Reingreso - Color Triaje",
+        "isHidden": true,
+        "columns": [
+          {
+            "name": "Color Urgencia",
+            "dataType": "string",
+            "sourceColumn": "Color Urgencia"
+          },
+          {
+            "name": "SKColorUrg",
+            "dataType": "int64",
+            "sourceColumn": "SKColorUrg"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vColorUrg = Source{[Schema=\"dim\",Item=\"TAB_vColorUrg\"]}[Data]",
+                "in",
+                "    dim_TAB_vColorUrg"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Destino Alta",
+        "columns": [
+          {
+            "name": "Alta Final",
+            "dataType": "string",
+            "sourceColumn": "Alta Final"
+          },
+          {
+            "name": "Destino Alta",
+            "dataType": "string",
+            "sourceColumn": "Destino Alta"
+          },
+          {
+            "name": "Domicilio Unico",
+            "dataType": "string",
+            "sourceColumn": "Domicilio Unico"
+          },
+          {
+            "name": "Medico Cabecera",
+            "dataType": "string",
+            "sourceColumn": "Medico Cabecera"
+          },
+          {
+            "name": "SKCodDestAlta",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKCodDestAlta"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vDestinoAlta = Source{[Schema=\"dim\",Item=\"TAB_vDestinoAlta\"]}[Data]",
+                "in",
+                "    dim_TAB_vDestinoAlta"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Altas Finales",
+            "levels": [
+              {
+                "name": "Alta Final",
+                "ordinal": 0,
+                "column": "Alta Final"
+              },
+              {
+                "name": "Destino Alta",
+                "ordinal": 1,
+                "column": "Destino Alta"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Color Triaje",
+        "columns": [
+          {
+            "name": "Color Urgencia",
+            "dataType": "string",
+            "sourceColumn": "Color Urgencia",
+            "sortByColumn": "SKColorUrg"
+          },
+          {
+            "name": "SKColorUrg",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKColorUrg"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vColorUrg = Source{[Schema=\"dim\",Item=\"TAB_vColorUrg\"]}[Data]",
+                "in",
+                "    dim_TAB_vColorUrg"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Color Urgencia",
+        "columns": [
+          {
+            "name": "Color Urgencia",
+            "dataType": "string",
+            "sourceColumn": "Color Urgencia",
+            "sortByColumn": "SKColorUrg"
+          },
+          {
+            "name": "SKColorUrg",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKColorUrg"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vColorUrg = Source{[Schema=\"dim\",Item=\"TAB_vColorUrg\"]}[Data]",
+                "in",
+                "    dim_TAB_vColorUrg"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Episodio Previo Reingreso - Color Urgencia",
+        "isHidden": true,
+        "columns": [
+          {
+            "name": "Color Urgencia",
+            "dataType": "string",
+            "sourceColumn": "Color Urgencia"
+          },
+          {
+            "name": "SKColorUrg",
+            "dataType": "int64",
+            "sourceColumn": "SKColorUrg"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vColorUrg = Source{[Schema=\"dim\",Item=\"TAB_vColorUrg\"]}[Data]",
+                "in",
+                "    dim_TAB_vColorUrg"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Fecha Llegada",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "Año",
+            "dataType": "int64",
+            "sourceColumn": "Año"
+          },
+          {
+            "name": "Año En Curso",
+            "dataType": "string",
+            "sourceColumn": "Año En Curso"
+          },
+          {
+            "name": "Año Pasado",
+            "dataType": "string",
+            "sourceColumn": "Año Pasado"
+          },
+          {
+            "name": "Año-Mes",
+            "dataType": "string",
+            "sourceColumn": "Año-Mes",
+            "sortByColumn": "NumAnyoMes"
+          },
+          {
+            "name": "Ayer",
+            "dataType": "string",
+            "sourceColumn": "Ayer"
+          },
+          {
+            "name": "Dia Semana",
+            "dataType": "string",
+            "sourceColumn": "Dia Semana",
+            "sortByColumn": "NumDiaSemana"
+          },
+          {
+            "name": "NumDiaSemana",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "NumDiaSemana"
+          },
+          {
+            "name": "Es Fin De Semana",
+            "dataType": "string",
+            "sourceColumn": "Es Fin De Semana"
+          },
+          {
+            "name": "FechaStr",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "FechaStr"
+          },
+          {
+            "name": "Hoy",
+            "dataType": "string",
+            "sourceColumn": "Hoy"
+          },
+          {
+            "name": "Mes",
+            "dataType": "string",
+            "sourceColumn": "Mes",
+            "sortByColumn": "Num Mes"
+          },
+          {
+            "name": "Mes En curso",
+            "dataType": "string",
+            "sourceColumn": "Mes En curso"
+          },
+          {
+            "name": "Mes Pasado",
+            "dataType": "string",
+            "sourceColumn": "Mes Pasado"
+          },
+          {
+            "name": "Num Mes",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Num Mes"
+          },
+          {
+            "name": "NumAnyoMes",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "NumAnyoMes"
+          },
+          {
+            "name": "Semana",
+            "dataType": "string",
+            "sourceColumn": "Semana",
+            "sortByColumn": "NumSemana"
+          },
+          {
+            "name": "NumSemana",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "NumSemana"
+          },
+          {
+            "name": "Semana En curso",
+            "dataType": "string",
+            "sourceColumn": "Semana En curso"
+          },
+          {
+            "name": "Semana Pasada",
+            "dataType": "string",
+            "sourceColumn": "Semana Pasada"
+          },
+          {
+            "name": "Trimestre",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Trimestre"
+          },
+          {
+            "name": "CodTiempo",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "CodTiempo"
+          },
+          {
+            "name": "Fecha",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "Fecha",
+            "annotations": [
+              {
+                "name": "TabularEditor_MarkAsDateKey",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "name": "NumDiaMes",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "NumDiaMes"
+          },
+          {
+            "name": "Mañana",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Mañana"
+          },
+          {
+            "name": "Mes Actual",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Mes Actual"
+          },
+          {
+            "name": "Ultimos Siete Dias",
+            "dataType": "string",
+            "sourceColumn": "Ultimos Siete Dias"
+          },
+          {
+            "name": "Ultimos Doce Meses",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Ultimos Doce Meses"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vTiempo = Source{[Schema=\"dim\",Item=\"TAB_vTiempo\"]}[Data]",
+                "in",
+                "    dim_TAB_vTiempo"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Tiempo Cita Calendario YMD",
+            "levels": [
+              {
+                "name": "Fecha",
+                "ordinal": 2,
+                "column": "Fecha"
+              },
+              {
+                "name": "Mes",
+                "ordinal": 1,
+                "column": "Mes"
+              },
+              {
+                "name": "Año",
+                "ordinal": 0,
+                "column": "Año"
+              }
+            ]
+          },
+          {
+            "name": "Tiempo Cita Calendario YQMWD",
+            "levels": [
+              {
+                "name": "Fecha",
+                "ordinal": 4,
+                "column": "Fecha"
+              },
+              {
+                "name": "Semana",
+                "ordinal": 3,
+                "column": "Semana"
+              },
+              {
+                "name": "Mes",
+                "ordinal": 2,
+                "column": "Mes"
+              },
+              {
+                "name": "Trimestre",
+                "ordinal": 1,
+                "column": "Trimestre"
+              },
+              {
+                "name": "Año",
+                "ordinal": 0,
+                "column": "Año"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Fecha Alta",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "Año",
+            "dataType": "int64",
+            "sourceColumn": "Año"
+          },
+          {
+            "name": "Año En Curso",
+            "dataType": "string",
+            "sourceColumn": "Año En Curso"
+          },
+          {
+            "name": "Año Pasado",
+            "dataType": "string",
+            "sourceColumn": "Año Pasado"
+          },
+          {
+            "name": "Año-Mes",
+            "dataType": "string",
+            "sourceColumn": "Año-Mes",
+            "sortByColumn": "NumAnyoMes"
+          },
+          {
+            "name": "Ayer",
+            "dataType": "string",
+            "sourceColumn": "Ayer"
+          },
+          {
+            "name": "Dia Semana",
+            "dataType": "string",
+            "sourceColumn": "Dia Semana",
+            "sortByColumn": "NumDiaSemana"
+          },
+          {
+            "name": "NumDiaSemana",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "NumDiaSemana"
+          },
+          {
+            "name": "Es Fin De Semana",
+            "dataType": "string",
+            "sourceColumn": "Es Fin De Semana"
+          },
+          {
+            "name": "FechaStr",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "FechaStr"
+          },
+          {
+            "name": "Hoy",
+            "dataType": "string",
+            "sourceColumn": "Hoy"
+          },
+          {
+            "name": "Mes",
+            "dataType": "string",
+            "sourceColumn": "Mes",
+            "sortByColumn": "Num Mes"
+          },
+          {
+            "name": "Mes En curso",
+            "dataType": "string",
+            "sourceColumn": "Mes En curso"
+          },
+          {
+            "name": "Mes Pasado",
+            "dataType": "string",
+            "sourceColumn": "Mes Pasado"
+          },
+          {
+            "name": "Num Mes",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Num Mes"
+          },
+          {
+            "name": "NumAnyoMes",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "NumAnyoMes"
+          },
+          {
+            "name": "Semana",
+            "dataType": "string",
+            "sourceColumn": "Semana",
+            "sortByColumn": "NumSemana"
+          },
+          {
+            "name": "NumSemana",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "NumSemana"
+          },
+          {
+            "name": "Semana En curso",
+            "dataType": "string",
+            "sourceColumn": "Semana En curso"
+          },
+          {
+            "name": "Semana Pasada",
+            "dataType": "string",
+            "sourceColumn": "Semana Pasada"
+          },
+          {
+            "name": "Trimestre",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Trimestre"
+          },
+          {
+            "name": "CodTiempo",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "CodTiempo"
+          },
+          {
+            "name": "Fecha",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "Fecha",
+            "annotations": [
+              {
+                "name": "TabularEditor_MarkAsDateKey",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "name": "NumDiaMes",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "NumDiaMes"
+          },
+          {
+            "name": "Mañana",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Mañana"
+          },
+          {
+            "name": "Mes Actual",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Mes Actual"
+          },
+          {
+            "name": "Ultimos Siete Dias",
+            "dataType": "string",
+            "sourceColumn": "Ultimos Siete Dias"
+          },
+          {
+            "name": "Ultimos Doce Meses",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Ultimos Doce Meses"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vTiempo = Source{[Schema=\"dim\",Item=\"TAB_vTiempo\"]}[Data]",
+                "in",
+                "    dim_TAB_vTiempo"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Tiempo Cita Calendario YMD",
+            "levels": [
+              {
+                "name": "Fecha",
+                "ordinal": 2,
+                "column": "Fecha"
+              },
+              {
+                "name": "Mes",
+                "ordinal": 1,
+                "column": "Mes"
+              },
+              {
+                "name": "Año",
+                "ordinal": 0,
+                "column": "Año"
+              }
+            ]
+          },
+          {
+            "name": "Tiempo Cita Calendario YQMWD",
+            "levels": [
+              {
+                "name": "Fecha",
+                "ordinal": 4,
+                "column": "Fecha"
+              },
+              {
+                "name": "Semana",
+                "ordinal": 3,
+                "column": "Semana"
+              },
+              {
+                "name": "Mes",
+                "ordinal": 2,
+                "column": "Mes"
+              },
+              {
+                "name": "Trimestre",
+                "ordinal": 1,
+                "column": "Trimestre"
+              },
+              {
+                "name": "Año",
+                "ordinal": 0,
+                "column": "Año"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Episodio Previo Reingreso - Fecha Alta",
+        "isHidden": true,
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "Año",
+            "dataType": "int64",
+            "sourceColumn": "Año"
+          },
+          {
+            "name": "Año En Curso",
+            "dataType": "string",
+            "sourceColumn": "Año En Curso"
+          },
+          {
+            "name": "Año Pasado",
+            "dataType": "string",
+            "sourceColumn": "Año Pasado"
+          },
+          {
+            "name": "Año-Mes",
+            "dataType": "string",
+            "sourceColumn": "Año-Mes"
+          },
+          {
+            "name": "Ayer",
+            "dataType": "string",
+            "sourceColumn": "Ayer"
+          },
+          {
+            "name": "Dia Semana",
+            "dataType": "string",
+            "sourceColumn": "Dia Semana"
+          },
+          {
+            "name": "NumDiaSemana",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "NumDiaSemana"
+          },
+          {
+            "name": "Es Fin De Semana",
+            "dataType": "string",
+            "sourceColumn": "Es Fin De Semana"
+          },
+          {
+            "name": "FechaStr",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "FechaStr"
+          },
+          {
+            "name": "Hoy",
+            "dataType": "string",
+            "sourceColumn": "Hoy"
+          },
+          {
+            "name": "Mes",
+            "dataType": "string",
+            "sourceColumn": "Mes",
+            "sortByColumn": "Num Mes"
+          },
+          {
+            "name": "Mes En curso",
+            "dataType": "string",
+            "sourceColumn": "Mes En curso"
+          },
+          {
+            "name": "Mes Pasado",
+            "dataType": "string",
+            "sourceColumn": "Mes Pasado"
+          },
+          {
+            "name": "Num Mes",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Num Mes"
+          },
+          {
+            "name": "NumAnyoMes",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "NumAnyoMes"
+          },
+          {
+            "name": "Semana",
+            "dataType": "string",
+            "sourceColumn": "Semana"
+          },
+          {
+            "name": "NumSemana",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "NumSemana"
+          },
+          {
+            "name": "Semana En curso",
+            "dataType": "string",
+            "sourceColumn": "Semana En curso"
+          },
+          {
+            "name": "Semana Pasada",
+            "dataType": "string",
+            "sourceColumn": "Semana Pasada"
+          },
+          {
+            "name": "Trimestre",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Trimestre"
+          },
+          {
+            "name": "CodTiempo",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "CodTiempo"
+          },
+          {
+            "name": "Fecha",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "Fecha",
+            "annotations": [
+              {
+                "name": "TabularEditor_MarkAsDateKey",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "name": "NumDiaMes",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "NumDiaMes"
+          },
+          {
+            "name": "Mañana",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Mañana"
+          },
+          {
+            "name": "Mes Actual",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Mes Actual"
+          },
+          {
+            "name": "Ultimos Siete Dias",
+            "dataType": "string",
+            "sourceColumn": "Ultimos Siete Dias"
+          },
+          {
+            "name": "Ultimos Doce Meses",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Ultimos Doce Meses"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vTiempo = Source{[Schema=\"dim\",Item=\"TAB_vTiempo\"]}[Data]",
+                "in",
+                "    dim_TAB_vTiempo"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Tiempo Cita Calendario YMD",
+            "levels": [
+              {
+                "name": "Fecha",
+                "ordinal": 2,
+                "column": "Fecha"
+              },
+              {
+                "name": "Mes",
+                "ordinal": 1,
+                "column": "Mes"
+              },
+              {
+                "name": "Año",
+                "ordinal": 0,
+                "column": "Año"
+              }
+            ]
+          },
+          {
+            "name": "Tiempo Cita Calendario YQMWD",
+            "levels": [
+              {
+                "name": "Fecha",
+                "ordinal": 4,
+                "column": "Fecha"
+              },
+              {
+                "name": "Semana",
+                "ordinal": 3,
+                "column": "Semana"
+              },
+              {
+                "name": "Mes",
+                "ordinal": 2,
+                "column": "Mes"
+              },
+              {
+                "name": "Trimestre",
+                "ordinal": 1,
+                "column": "Trimestre"
+              },
+              {
+                "name": "Año",
+                "ordinal": 0,
+                "column": "Año"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Hora Salida",
+        "columns": [
+          {
+            "name": "HoraId",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "HoraId"
+          },
+          {
+            "name": "Franja Horaria",
+            "dataType": "string",
+            "sourceColumn": "Franja Horaria"
+          },
+          {
+            "name": "Turno",
+            "dataType": "string",
+            "sourceColumn": "Turno"
+          },
+          {
+            "name": "Hora",
+            "dataType": "string",
+            "sourceColumn": "Hora",
+            "sortByColumn": "HoraId"
+          },
+          {
+            "name": "Orden",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Orden"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vFranjaHoraria = Source{[Schema=\"dim\",Item=\"TAB_vFranjaHoraria\"]}[Data]",
+                "in",
+                "    dim_TAB_vFranjaHoraria"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Médico Cupo Paciente",
+        "columns": [
+          {
+            "name": "SKMedico",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKMedico"
+          },
+          {
+            "name": "DNI Médico",
+            "dataType": "string",
+            "sourceColumn": "DNI Médico"
+          },
+          {
+            "name": "Clave Médico",
+            "dataType": "string",
+            "sourceColumn": "Clave Médico"
+          },
+          {
+            "name": "Médico",
+            "dataType": "string",
+            "sourceColumn": "Médico"
+          },
+          {
+            "name": "Zona Básica",
+            "dataType": "string",
+            "sourceColumn": "Zona Básica"
+          },
+          {
+            "name": "Centro Médico",
+            "dataType": "string",
+            "sourceColumn": "Centro Médico"
+          },
+          {
+            "name": "Servicio",
+            "dataType": "string",
+            "sourceColumn": "Servicio"
+          },
+          {
+            "name": "Cupo Activo",
+            "dataType": "string",
+            "sourceColumn": "Cupo Activo"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vMedicos = Source{[Schema=\"dim\",Item=\"TAB_vMedicos\"]}[Data]",
+                "in",
+                "    dim_TAB_vMedicos"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Centro - Médico",
+            "levels": [
+              {
+                "name": "Médico",
+                "ordinal": 1,
+                "column": "Médico"
+              },
+              {
+                "name": "Centro Médico",
+                "ordinal": 0,
+                "column": "Centro Médico"
+              }
+            ]
+          },
+          {
+            "name": "Servicio - Médico",
+            "levels": [
+              {
+                "name": "Médico",
+                "ordinal": 1,
+                "column": "Médico"
+              },
+              {
+                "name": "Servicio",
+                "ordinal": 0,
+                "column": "Servicio"
+              }
+            ]
+          },
+          {
+            "name": "Zona Básica - Médico",
+            "levels": [
+              {
+                "name": "Médico",
+                "ordinal": 2,
+                "column": "Médico"
+              },
+              {
+                "name": "Centro Médico",
+                "ordinal": 1,
+                "column": "Centro Médico"
+              },
+              {
+                "name": "Zona Básica",
+                "ordinal": 0,
+                "column": "Zona Básica"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Episodio Previo Reingreso - Médico",
+        "isHidden": true,
+        "columns": [
+          {
+            "name": "SKMedico",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKMedico"
+          },
+          {
+            "name": "DNI Médico",
+            "dataType": "string",
+            "sourceColumn": "DNI Médico"
+          },
+          {
+            "name": "Clave Médico",
+            "dataType": "string",
+            "sourceColumn": "Clave Médico"
+          },
+          {
+            "name": "Médico",
+            "dataType": "string",
+            "sourceColumn": "Médico"
+          },
+          {
+            "name": "Zona Básica",
+            "dataType": "string",
+            "sourceColumn": "Zona Básica"
+          },
+          {
+            "name": "Centro Médico",
+            "dataType": "string",
+            "sourceColumn": "Centro Médico"
+          },
+          {
+            "name": "Servicio",
+            "dataType": "string",
+            "sourceColumn": "Servicio"
+          },
+          {
+            "name": "Cupo Activo",
+            "dataType": "string",
+            "sourceColumn": "Cupo Activo"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vMedicos = Source{[Schema=\"dim\",Item=\"TAB_vMedicos\"]}[Data]",
+                "in",
+                "    dim_TAB_vMedicos"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Centro - Médico",
+            "levels": [
+              {
+                "name": "Médico",
+                "ordinal": 1,
+                "column": "Médico"
+              },
+              {
+                "name": "Centro Médico",
+                "ordinal": 0,
+                "column": "Centro Médico"
+              }
+            ]
+          },
+          {
+            "name": "Servicio - Médico",
+            "levels": [
+              {
+                "name": "Médico",
+                "ordinal": 1,
+                "column": "Médico"
+              },
+              {
+                "name": "Servicio",
+                "ordinal": 0,
+                "column": "Servicio"
+              }
+            ]
+          },
+          {
+            "name": "Zona Básica - Médico",
+            "levels": [
+              {
+                "name": "Médico",
+                "ordinal": 2,
+                "column": "Médico"
+              },
+              {
+                "name": "Centro Médico",
+                "ordinal": 1,
+                "column": "Centro Médico"
+              },
+              {
+                "name": "Zona Básica",
+                "ordinal": 0,
+                "column": "Zona Básica"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Episodio Previo Reingreso - Destino Alta",
+        "isHidden": true,
+        "columns": [
+          {
+            "name": "Alta Final",
+            "dataType": "string",
+            "sourceColumn": "Alta Final"
+          },
+          {
+            "name": "Destino Alta",
+            "dataType": "string",
+            "sourceColumn": "Destino Alta"
+          },
+          {
+            "name": "Domicilio Unico",
+            "dataType": "string",
+            "sourceColumn": "Domicilio Unico"
+          },
+          {
+            "name": "Medico Cabecera",
+            "dataType": "string",
+            "sourceColumn": "Medico Cabecera"
+          },
+          {
+            "name": "SKCodDestAlta",
+            "dataType": "int64",
+            "sourceColumn": "SKCodDestAlta"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vDestinoAlta = Source{[Schema=\"dim\",Item=\"TAB_vDestinoAlta\"]}[Data]",
+                "in",
+                "    dim_TAB_vDestinoAlta"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Ingreso Planta",
+        "columns": [
+          {
+            "name": "SKValor",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKValor"
+          },
+          {
+            "name": "Ingreso Planta",
+            "dataType": "string",
+            "sourceColumn": "Valor"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vSiNo = Source{[Schema=\"dim\",Item=\"TAB_vSiNo\"]}[Data]",
+                "in",
+                "    dim_TAB_vSiNo"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Tiene Interconsulta",
+        "columns": [
+          {
+            "name": "SKValor",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKValor"
+          },
+          {
+            "name": "Tiene Interconsulta",
+            "dataType": "string",
+            "sourceColumn": "Valor"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vSiNo = Source{[Schema=\"dim\",Item=\"TAB_vSiNo\"]}[Data]",
+                "in",
+                "    dim_TAB_vSiNo"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Ingreso Observación",
+        "columns": [
+          {
+            "name": "SKValor",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKValor"
+          },
+          {
+            "name": "Ingreso Observación",
+            "dataType": "string",
+            "sourceColumn": "Valor"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vSiNo = Source{[Schema=\"dim\",Item=\"TAB_vSiNo\"]}[Data]",
+                "in",
+                "    dim_TAB_vSiNo"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Ingreso Parto",
+        "columns": [
+          {
+            "name": "SKValor",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKValor"
+          },
+          {
+            "name": "Ingreso Parto",
+            "dataType": "string",
+            "sourceColumn": "Valor"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vSiNo = Source{[Schema=\"dim\",Item=\"TAB_vSiNo\"]}[Data]",
+                "in",
+                "    dim_TAB_vSiNo"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Festivo Fecha Llegada",
+        "columns": [
+          {
+            "name": "SKValor",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKValor"
+          },
+          {
+            "name": "Festivo Fecha Llegada",
+            "dataType": "string",
+            "sourceColumn": "Valor"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vSiNo = Source{[Schema=\"dim\",Item=\"TAB_vSiNo\"]}[Data]",
+                "in",
+                "    dim_TAB_vSiNo"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Festivo Fecha Alta",
+        "columns": [
+          {
+            "name": "SKValor",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SKValor"
+          },
+          {
+            "name": "Festivo Fecha Alta",
+            "dataType": "string",
+            "sourceColumn": "Valor"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vSiNo = Source{[Schema=\"dim\",Item=\"TAB_vSiNo\"]}[Data]",
+                "in",
+                "    dim_TAB_vSiNo"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Servicio Atención",
+        "columns": [
+          {
+            "name": "Código",
+            "dataType": "string",
+            "sourceColumn": "Código"
+          },
+          {
+            "name": "Código Oficial",
+            "dataType": "string",
+            "sourceColumn": "Código Oficial"
+          },
+          {
+            "name": "Desc Grupo",
+            "dataType": "string",
+            "sourceColumn": "Desc Grupo"
+          },
+          {
+            "name": "Sk Corp",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Sk Corp"
+          },
+          {
+            "name": "Servicio",
+            "dataType": "string",
+            "sourceColumn": "Servicio"
+          },
+          {
+            "name": "Servicio Alumbra",
+            "dataType": "string",
+            "sourceColumn": "Servicio Alumbra",
+            "displayFolder": "Agrupación"
+          },
+          {
+            "name": "Servicio Especializada CEX",
+            "dataType": "string",
+            "sourceColumn": "Servicio Especializada CEX"
+          },
+          {
+            "name": "Servicio LECEX",
+            "dataType": "string",
+            "sourceColumn": "Servicio LECEX",
+            "displayFolder": "Agrupación"
+          },
+          {
+            "name": "Servicio LEQ",
+            "dataType": "string",
+            "sourceColumn": "Servicio LEQ"
+          },
+          {
+            "name": "Servicio Local",
+            "dataType": "string",
+            "sourceColumn": "Servicio Local"
+          },
+          {
+            "name": "Servicio Pruebas",
+            "dataType": "string",
+            "sourceColumn": "Servicio Pruebas"
+          },
+          {
+            "name": "Servicio Quirúrgico",
+            "dataType": "string",
+            "sourceColumn": "Servicio Quirúrgico"
+          },
+          {
+            "name": "Tipo Servicio",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Tipo Servicio"
+          },
+          {
+            "name": "SK Servicio",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SK Servicio"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vServicio = Source{[Schema=\"dim\",Item=\"TAB_vServicio\"]}[Data]",
+                "in",
+                "    dim_TAB_vServicio"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Servicio Ingreso",
+        "columns": [
+          {
+            "name": "Código",
+            "dataType": "string",
+            "sourceColumn": "Código"
+          },
+          {
+            "name": "Código Oficial",
+            "dataType": "string",
+            "sourceColumn": "Código Oficial"
+          },
+          {
+            "name": "Desc Grupo",
+            "dataType": "string",
+            "sourceColumn": "Desc Grupo"
+          },
+          {
+            "name": "Sk Corp",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Sk Corp"
+          },
+          {
+            "name": "Servicio",
+            "dataType": "string",
+            "sourceColumn": "Servicio"
+          },
+          {
+            "name": "Servicio Alumbra",
+            "dataType": "string",
+            "sourceColumn": "Servicio Alumbra",
+            "displayFolder": "Agrupación"
+          },
+          {
+            "name": "Servicio Especializada CEX",
+            "dataType": "string",
+            "sourceColumn": "Servicio Especializada CEX"
+          },
+          {
+            "name": "Servicio LECEX",
+            "dataType": "string",
+            "sourceColumn": "Servicio LECEX",
+            "displayFolder": "Agrupación"
+          },
+          {
+            "name": "Servicio LEQ",
+            "dataType": "string",
+            "sourceColumn": "Servicio LEQ"
+          },
+          {
+            "name": "Servicio Local",
+            "dataType": "string",
+            "sourceColumn": "Servicio Local"
+          },
+          {
+            "name": "Servicio Pruebas",
+            "dataType": "string",
+            "sourceColumn": "Servicio Pruebas"
+          },
+          {
+            "name": "Servicio Quirúrgico",
+            "dataType": "string",
+            "sourceColumn": "Servicio Quirúrgico"
+          },
+          {
+            "name": "Tipo Servicio",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Tipo Servicio"
+          },
+          {
+            "name": "SK Servicio",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SK Servicio"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = HClinicaDWFSA,",
+                "    dim_TAB_vServicio = Source{[Schema=\"dim\",Item=\"TAB_vServicio\"]}[Data]",
+                "in",
+                "    dim_TAB_vServicio"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "bff107d3-cd12-4cec-96dc-a89006604f51",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKPaciente",
+        "toTable": "Paciente",
+        "toColumn": "SKPaciente"
+      },
+      {
+        "name": "cd3b3711-664d-40c2-b64b-7d486bef0687",
+        "fromTable": "Urgencias",
+        "fromColumn": "ColorUrgTriaje",
+        "toTable": "Color Triaje",
+        "toColumn": "SKColorUrg"
+      },
+      {
+        "name": "429ced29-8935-4f11-b18f-522126013ee6",
+        "fromTable": "Urgencias",
+        "fromColumn": "FEntrada",
+        "toTable": "Fecha Llegada",
+        "toColumn": "CodTiempo"
+      },
+      {
+        "name": "f5003972-99c1-4bb9-84e3-6a700024d698",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKCentro",
+        "toTable": "Centro",
+        "toColumn": "SKCentro"
+      },
+      {
+        "name": "85433648-5000-4d84-8687-16533bbc2d16",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKColectivo",
+        "toTable": "Colectivo",
+        "toColumn": "SKColectivo"
+      },
+      {
+        "name": "dc0cb23b-535a-4a13-81d6-1647fa33141a",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKDiagnostico",
+        "toTable": "Diagnóstico CIE9",
+        "toColumn": "SKDiagnostico"
+      },
+      {
+        "name": "d6f234bc-f250-48eb-a172-fcbf85914c35",
+        "fromTable": "Urgencias",
+        "fromColumn": "HoraAlta",
+        "toTable": "Hora Salida",
+        "toColumn": "HoraId"
+      },
+      {
+        "name": "c5d935c1-b1ec-4c00-bd79-0ec5fb9b76c2",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKMedico",
+        "toTable": "Médico",
+        "toColumn": "SKMedico"
+      },
+      {
+        "name": "9717621d-f683-4ff8-9d3d-450bb971ea27",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKCodDestAlta",
+        "toTable": "Destino Alta",
+        "toColumn": "SKCodDestAlta"
+      },
+      {
+        "name": "7f32c91d-9574-4d7b-a8fe-d9aac065c62b",
+        "fromTable": "Urgencias",
+        "fromColumn": "IngresoPlanta",
+        "toTable": "Ingreso Planta",
+        "toColumn": "SKValor"
+      },
+      {
+        "name": "4c63daea-0b8d-4809-bb31-76cb29a11067",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKServicio",
+        "toTable": "Servicio Atención",
+        "toColumn": "SK Servicio"
+      },
+      {
+        "name": "11e39cad-bac9-4b03-a939-de5191489e17",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKConcesion",
+        "toTable": "Concesión",
+        "toColumn": "SKConcesion"
+      },
+      {
+        "name": "5be77e93-64d1-44f9-91b2-ede4d3799a8b",
+        "fromTable": "Urgencias",
+        "fromColumn": "ColorUrg",
+        "toTable": "Color Urgencia",
+        "toColumn": "SKColorUrg"
+      },
+      {
+        "name": "cf166dd8-140b-4b61-93c0-233c964d5c7e",
+        "fromTable": "Urgencias",
+        "fromColumn": "Interconsulta",
+        "toTable": "Tiene Interconsulta",
+        "toColumn": "SKValor"
+      },
+      {
+        "name": "3861bdee-084f-44a9-b15c-9515289926df",
+        "fromTable": "Urgencias",
+        "fromColumn": "Observacion",
+        "toTable": "Ingreso Observación",
+        "toColumn": "SKValor"
+      },
+      {
+        "name": "a937b789-1147-4dc4-baf2-87121253d69a",
+        "fromTable": "Urgencias",
+        "fromColumn": "HoraEntrada",
+        "toTable": "Hora Entrada",
+        "toColumn": "HoraId"
+      },
+      {
+        "name": "57f1b4e1-012c-4b12-a61a-145927224c9d",
+        "fromTable": "Urgencias",
+        "fromColumn": "IngresoParto",
+        "toTable": "Ingreso Parto",
+        "toColumn": "SKValor"
+      },
+      {
+        "name": "c01df8cb-ef4d-4d89-854b-362cb9f495dc",
+        "fromTable": "Urgencias",
+        "fromColumn": "FAlta",
+        "toTable": "Fecha Alta",
+        "toColumn": "CodTiempo"
+      },
+      {
+        "name": "1e161f62-f8a0-4d5b-91ca-03e20865658c",
+        "fromTable": "Urgencias",
+        "fromColumn": "TipoUrg",
+        "toTable": "Tipo Urgencia",
+        "toColumn": "SKTipoUrgencia"
+      },
+      {
+        "name": "8d4a87da-3a43-4d5c-a507-ba4ca883b4b9",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKCentroSaludPaciente",
+        "toTable": "Centro Salud Paciente",
+        "toColumn": "SKCentro"
+      },
+      {
+        "name": "8c49bd2c-2f48-4ce1-b4d7-c8f09d59505b",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKMedicoPaciente",
+        "toTable": "Médico Cupo Paciente",
+        "toColumn": "SKMedico"
+      },
+      {
+        "name": "eb263d13-25ca-4e94-8f01-a2f830f30de3",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKConcesion",
+        "toTable": "ConcesionOculta",
+        "toColumn": "SKConcesion"
+      },
+      {
+        "name": "2d4dbf1a-f429-4607-a9d2-41c658bed023",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKServicioIngreso",
+        "toTable": "Servicio Ingreso",
+        "toColumn": "SK Servicio"
+      },
+      {
+        "name": "205309ce-146f-41ca-89b7-0eaf2b85242e",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKMedicoEPOrigen",
+        "toTable": "Episodio Previo Reingreso - Médico",
+        "toColumn": "SKMedico"
+      },
+      {
+        "name": "f5eb84aa-08e0-4b95-ad86-0562cb8820ff",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKServicioIngresoEPOrigen",
+        "toTable": "Episodio Previo Reingreso - Servicio Médico",
+        "toColumn": "SK Servicio"
+      },
+      {
+        "name": "f8f8e913-d9e0-4b8f-85f5-13a76a4b3431",
+        "fromTable": "Urgencias",
+        "fromColumn": "ColorUrgEPOrigen",
+        "toTable": "Episodio Previo Reingreso - Color Urgencia",
+        "toColumn": "SKColorUrg"
+      },
+      {
+        "name": "797923c3-2e4f-460c-b726-d4f0bc8049b8",
+        "fromTable": "Urgencias",
+        "fromColumn": "ColorUrgTriajeEPOrigen",
+        "toTable": "Episodio Previo Reingreso - Color Triaje",
+        "toColumn": "SKColorUrg"
+      },
+      {
+        "name": "ab54af1c-db80-40f9-a7d5-13a2d561b1dc",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKCodDestinoAltaEPOrigen",
+        "toTable": "Episodio Previo Reingreso - Destino Alta",
+        "toColumn": "SKCodDestAlta"
+      },
+      {
+        "name": "b2c4798f-b871-4ea3-b06b-13e2df2bc9a6",
+        "fromTable": "Urgencias",
+        "fromColumn": "FAltaEPOrigen",
+        "toTable": "Episodio Previo Reingreso - Fecha Alta",
+        "toColumn": "CodTiempo"
+      },
+      {
+        "name": "970d6c30-55b1-4f1e-96b9-2d2e4f8f0676",
+        "fromTable": "Urgencias",
+        "fromColumn": "EsFestivoFEntrada",
+        "toTable": "Festivo Fecha Llegada",
+        "toColumn": "SKValor"
+      },
+      {
+        "name": "05dc9df4-aab7-4ced-9fb3-e0bd215319b0",
+        "fromTable": "Urgencias",
+        "fromColumn": "EsFestivoFAlta",
+        "toTable": "Festivo Fecha Alta",
+        "toColumn": "SKValor"
+      },
+      {
+        "name": "dd61f041-5082-48b3-8230-b564e869e946",
+        "fromTable": "Urgencias",
+        "fromColumn": "SKDiagnosticoCIE10",
+        "toTable": "Diagnóstico CIE10",
+        "toColumn": "SKDiagnostico"
+      },
+      {
+        "name": "87e7dd7d-3e48-44a7-b59a-2860a21a244f",
+        "fromTable": "Urgencias",
+        "fromColumn": "OrdenRangoEtario",
+        "toTable": "Rango Etario",
+        "toColumn": "OrdenRangoEtarioDetallado"
+      },
+      {
+        "name": "e04154d1-8e71-4635-9296-e8f7aa9b0302",
+        "fromTable": "Tiempo",
+        "fromColumn": "CodTiempo",
+        "toTable": "Fecha Llegada",
+        "toColumn": "CodTiempo"
+      },
+      {
+        "name": "dd7fd52d-2cc6-42ea-8c21-1114742599d0",
+        "fromTable": "Tiempo",
+        "fromColumn": "CodTiempo",
+        "toTable": "Festivo Fecha Llegada",
+        "toColumn": "SKValor"
+      },
+      {
+        "name": "a16e6ea3-c697-461b-ba67-449872e6ec82",
+        "fromTable": "Población",
+        "fromColumn": "CodTiempo",
+        "toTable": "Fecha Llegada",
+        "toColumn": "CodTiempo"
+      },
+      {
+        "name": "83724094-59ce-47bd-85c1-d4b1af631e0f",
+        "fromTable": "Población",
+        "fromColumn": "SKCentro",
+        "toTable": "Centro",
+        "toColumn": "SKCentro"
+      },
+      {
+        "name": "a0525ba6-995a-4a6c-a19b-5df88bba9e8d",
+        "fromTable": "Población",
+        "fromColumn": "SKConcesion",
+        "toTable": "Concesión",
+        "toColumn": "SKConcesion"
+      },
+      {
+        "name": "39591dd2-0aae-45b1-8efe-01c1599ca461",
+        "fromTable": "Población",
+        "fromColumn": "SKCentro",
+        "toTable": "Centro Salud Paciente",
+        "toColumn": "SKCentro"
+      },
+      {
+        "name": "280d8d25-b0e5-4865-a1b3-b7ad25247f08",
+        "fromTable": "Población",
+        "fromColumn": "SKMedico",
+        "toTable": "Médico Cupo Paciente",
+        "toColumn": "SKMedico"
+      },
+      {
+        "name": "c91634e5-d7f6-4cfd-b44c-cbca37251e62",
+        "fromTable": "Población",
+        "fromColumn": "SKConcesion",
+        "toTable": "ConcesionOculta",
+        "toColumn": "SKConcesion"
+      },
+      {
+        "name": "65e2a9e9-1af3-4498-8f96-4d6b377a4768",
+        "fromTable": "Tiempo",
+        "fromColumn": "CodTiempo",
+        "toTable": "Fecha Alta",
+        "toColumn": "CodTiempo"
+      }
+    ],
+    "roles": [
+      {
+        "name": "Concesion",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "Concesión",
+            "filterExpression": "'Concesión'[SKConcesion]=-1"
+          }
+        ]
+      },
+      {
+        "name": "Concesion_GDPR",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "Concesión",
+            "filterExpression": "'Concesión'[SKConcesion]=-1"
+          },
+          {
+            "name": "Médico",
+            "columnPermissions": [
+              {
+                "name": "Médico",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "DNI Médico",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Clave Médico",
+                "metadataPermission": "none"
+              }
+            ]
+          },
+          {
+            "name": "Médico Cupo Paciente",
+            "columnPermissions": [
+              {
+                "name": "DNI Médico",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Clave Médico",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Médico",
+                "metadataPermission": "none"
+              }
+            ]
+          },
+          {
+            "name": "Episodio Previo Reingreso - Médico",
+            "columnPermissions": [
+              {
+                "name": "DNI Médico",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Clave Médico",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Médico",
+                "metadataPermission": "none"
+              }
+            ]
+          },
+          {
+            "name": "Paciente",
+            "columnPermissions": [
+              {
+                "name": "Nif",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "SIP",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "CodHistoria",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Teléfonos",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Dni Médico Cupo",
+                "metadataPermission": "none"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Division",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "Centro",
+            "filterExpression": "Centro[División]=\"N/A\""
+          }
+        ]
+      },
+      {
+        "name": "Division_GDPR",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "Médico",
+            "columnPermissions": [
+              {
+                "name": "Médico",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "DNI Médico",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Clave Médico",
+                "metadataPermission": "none"
+              }
+            ]
+          },
+          {
+            "name": "Médico Cupo Paciente",
+            "columnPermissions": [
+              {
+                "name": "DNI Médico",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Clave Médico",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Médico",
+                "metadataPermission": "none"
+              }
+            ]
+          },
+          {
+            "name": "Episodio Previo Reingreso - Médico",
+            "columnPermissions": [
+              {
+                "name": "DNI Médico",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Clave Médico",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Médico",
+                "metadataPermission": "none"
+              }
+            ]
+          },
+          {
+            "name": "Paciente",
+            "columnPermissions": [
+              {
+                "name": "Nif",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "SIP",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "CodHistoria",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Teléfonos",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Dni Médico Cupo",
+                "metadataPermission": "none"
+              }
+            ]
+          },
+          {
+            "name": "Centro",
+            "filterExpression": "Centro[División]=\"N/A\""
+          }
+        ]
+      }
+    ],
+    "annotations": [
+      {
+        "name": "ClientCompatibilityLevel",
+        "value": "600"
+      },
+      {
+        "name": "TabularEditor_SerializeOptions",
+        "value": "{\"IgnoreInferredObjects\":true,\"IgnoreInferredProperties\":true,\"IgnoreTimestamps\":true,\"SplitMultilineStrings\":true,\"PrefixFilenames\":false,\"LocalTranslations\":false,\"LocalPerspectives\":false,\"LocalRelationships\":false,\"Levels\":[\"Data Sources\",\"Shared Expressions\",\"Perspectives\",\"Relationships\",\"Roles\",\"Tables\",\"Tables/Columns\",\"Tables/Hierarchies\",\"Tables/Measures\",\"Tables/Partitions\",\"Tables/Calculation Items\",\"Translations\"]}"
+      },
+      {
+        "name": "__TEdtr",
+        "value": "1"
+      }
+    ]
+  }
+}
