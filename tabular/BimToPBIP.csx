@@ -20,7 +20,7 @@ String __ServerName =
     Interaction.InputBox(
     Prompt: "Enter name for the server:",
         Title: "Server",
-        DefaultResponse: "37hwelarpobuviffdsfohvhvyy-qavlxrizl4zelclxrc4gltrt3e.datawarehouse.fabric.microsoft.com"
+        DefaultResponse: ""
     );
 if(__ServerName == "") {
     Error("No server name provided");
@@ -32,7 +32,7 @@ String __DatabaseName =
     Interaction.InputBox(
     Prompt: "Enter name for the database:",
     Title: "Database",
-        DefaultResponse: "DEV_DLH_03_GOLD_out"
+        DefaultResponse: ""
     );
 if(__DatabaseName == "") {
     Error("No database name provided");
