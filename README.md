@@ -4,6 +4,10 @@ The purpose of this repository is to provide developers with tools and utilities
 
 ## 📦 Contents
 
+### 📁 [doc](https://github.com/javendia/Fabric/blob/main/doc)
+
+Full documentation about the Power BI / Fabric projects.
+
 ### 📁 [tabular](https://github.com/javendia/Fabric/blob/main/tabular)
 
 Scripts to automate actions over a tabular model
