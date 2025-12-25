@@ -30,13 +30,16 @@ Scripts to automate actions over a tabular model
         - The first step is to extract the metadata from the tabular model. We can get it using Tabular Editor as follows:
              - Connect with the desired tabular model
             
-             ![img](./tabular/media/tabular-01.png)
-            
-             - Save metadata
-            
-             ![img](./tabular/media/tabular-02.png)
-            
-             ![img](./tabular/media/tabular-03.png)
+            <p align="center">
+              <img src="./tabular/media/tabular-01.png" alt="Connect to tabular model">
+            </p>
+            - Save metadata
+            <p align="center">
+              <img src="./tabular/media/tabular-02.png" alt="Save metadata step 1">
+            </p>
+            <p align="center">
+              <img src="./tabular/media/tabular-03.png" alt="Save metadata step 2">
+            </p>
             
          - Secondly, we need to fill a dictionary CSV file, where each key-value represents an entity model and its data source (table or view)
         - Secondly, we need to fill a dictionary CSV file, where each key-value represents an entity model and its data source (table or view)
