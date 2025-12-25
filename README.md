@@ -1,16 +1,16 @@
-# Power BI / Microsoft Fabric utils
+# Power BI utils
 
-The purpose of this repository is to provide developers with tools and utilities to implement solutions on Power BI / Microsoft Fabric.
+The purpose of this repository is to provide developers with tools and utilities to implement solutions on Power BI.
 
 ## 🚀 Getting Started
 
-This repository contains automated scripts for Power BI and Microsoft Fabric workflows. Choose the script that best fits your use case and follow the instructions provided in each section.
+This repository contains automated scripts for Power BI workflows. Choose the script that best fits your use case and follow the instructions provided in each section.
 
 ## Contents
 
 ### 📁 [doc](https://github.com/javendia/Fabric/blob/main/doc)
 
-Full documentation about the Power BI / Fabric projects.
+Full documentation about the Power BI projects.
 
 ### 📁 [tabular](https://github.com/javendia/Fabric/blob/main/tabular)
 
