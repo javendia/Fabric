@@ -2,10 +2,9 @@
 
 The purpose of this repository is to provide developers with tools and utilities to implement solutions on Power BI / Microsoft Fabric.
 
-## Summary
-- [Contents](#-contents)
-- [BimToPBIP Script](#-bimtopbip-script)
-- [MigratePBI Script](#-migratepbi-script)
+## 🚀 Getting Started
+
+This repository contains automated scripts for Power BI and Microsoft Fabric workflows. Choose the script that best fits your use case and follow the instructions provided in each section.
 
 ## Contents
 
@@ -66,7 +65,7 @@ Scripts to perform actions over Power BI reports
         Script to convert a Power BI report (.pbix) to a Power BI project (.pbip) and publish it to the service.
     - **Prerequisites**
         
-        - [PowerShell 7.x](https://learn.microsoft.com/es-es/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5)
+        - [PowerShell 7.x](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5)
         - Permission to execute PowerShell scripts
 
         ```powershell
@@ -80,3 +79,7 @@ Scripts to perform actions over Power BI reports
             - In order to bind the report, the corresponding semantic model id
         - During the execution, the script creates a subfolder in the directory passed as argument. After that, you must save the report as Power BI project manually. The project must be placed in the subfolder created previously
         - Finally, the report is published to Power BI service and it is linked to the semantic model
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
