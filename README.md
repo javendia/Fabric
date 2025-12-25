@@ -1,4 +1,5 @@
 # Power BI / Microsoft Fabric utils
+
 The purpose of this repository is to provide developers with tools and utilities to implement solutions on Power BI / Microsoft Fabric.
 
 ## Summary
@@ -28,20 +29,22 @@ Scripts to automate actions over a tabular model
     - **How it works**
         
         - The first step is to extract the metadata from the tabular model. We can get it using Tabular Editor as follows:
-             - Connect with the desired tabular model
+          
+            1. Connect with the desired tabular model
             
-            <p align="center">
-              <img src="./tabular/media/tabular-01.png" alt="Connect to tabular model">
-            </p>
-            - Save metadata
-            <p align="center">
-              <img src="./tabular/media/tabular-02.png" alt="Save metadata step 1">
-            </p>
-            <p align="center">
-              <img src="./tabular/media/tabular-03.png" alt="Save metadata step 2">
-            </p>
+               <p align="center">
+                 <img src="./tabular/media/tabular-01.png" alt="Connect to tabular model">
+               </p>
             
-         - Secondly, we need to fill a dictionary CSV file, where each key-value represents an entity model and its data source (table or view)
+            2. Save metadata
+            
+               <p align="center">
+                 <img src="./tabular/media/tabular-02.png" alt="Save metadata step 1">
+               </p>
+               <p align="center">
+                 <img src="./tabular/media/tabular-03.png" alt="Save metadata step 2">
+               </p>
+            
         - Secondly, we need to fill a dictionary CSV file, where each key-value represents an entity model and its data source (table or view)
         - Then, we will open the extracted tabular model and finally run the script on Tabular Editor. The script prompts you for three values:
             - The SQL connection string to the lakehouse SQL endpoint, used as destination server
@@ -65,6 +68,7 @@ Scripts to perform actions over Power BI reports
         
         - [PowerShell 7.x](https://learn.microsoft.com/es-es/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5)
         - Permission to execute PowerShell scripts
+
         ```powershell
         Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
         ```
